@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage</title>
+    <link rel="stylesheet" href="css/tilebar.css">
+    <link rel="stylesheet" href="css/storage.css">
+    <script type="module" src="js/storage-manager.js"></script>
+    <script type="module" src="js/storage.js"></script>
+</head>
+<body id="body">
+   <!-- Menu -->
+    <div class="menu">
+        <div class="options">
+          <a>Storage</a>
+        </div>
+        <div class="window-buttons">
+            <div class="minimize" id="minimize">
+                <img src="../../assets/img/window-minimize-solid.svg" alt="">
+              </div>
+              <div class="pin-window" id="pin">
+                <img src="../../assets/img/thumbtack-solid.svg" alt="">
+              </div>
+              <div class="close" id="close">
+                <img src="../../assets/img/times-solid.svg" alt="">
+              </div>
+        </div>
+    </div>
+
+    <!-- Folders and colors -->
+    <div class="content-page">
+        <div class="folders">
+          <div class="container" id="folders">
+          </div>
+        </div>
+        <div class="colors">
+          <div class="container" id="colors">
+          </div>
+        </div>
+    </div>
+
+    <!-- Mouse Dropdown Folders -->
+    <div class="dropdown-menu hide-menu" id="mouse-dropdown">
+      <div class="item" id="add-file">
+        <img src="../../assets/img/add-folder.svg" alt="">
+        <a>Create new file</a>
+      </div>
+      <div class="item" id="rename-file">
+        <img src="../../assets/img/edit.svg" alt="">
+        <a>Rename file</a>
+      </div>
+      <div class="item">
+        <img src="../../assets/img/plus.svg" alt="">
+        <a>Add new color</a>
+      </div>
+      <div class="item delete-file" id="delete">
+        <img src="../../assets/img/trash.svg" alt="">
+        <a>Delete file</a>
+      </div>
+    </div>
+
+    <!-- Add file popup (name input) -->
+    <div class="popup hide-file-name" id="popup">
+      <a>File Name: </a>
+      <input type="text" name="" id="new-file-name" placeholder="Enter file name">
+    </div>
+
+    <!-- Delete file popup -->
+    <div class="popup-delete hide-popup-delete" id="delete-file-popup">
+      <div class="description">
+        <a>Are you sure to delete this file ?</a>
+      </div>
+      <div class="delete-buttons">
+        <div id="delete-file">
+          <a>Delete file</a>
+        </div>
+        <div id="cancel-delete">
+          <a>Cancel</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mouse Dropdown Colors -->
+    <div class="color-dropdown-menu hide-menu" id="color-mouse-dropdown">
+      <!-- <div class="item" id="rename-color">
+        <img src="../../assets/img/edit.svg" alt="">
+        <a>Rename color</a>
+      </div> -->
+      <div class="item" id="edit-color">
+        <img src="../../assets/img/dropper.svg" alt="">
+        <a>Edit color</a>
+      </div>
+      <div class="item delete-file" id="delete-color">
+        <img src="../../assets/img/trash.svg" alt="">
+        <a>Delete color</a>
+      </div>
+    </div>
+
+    <!-- Delete Color Popup -->
+    <div class="popup-delete-color hide-popup-delete" id="delete-color-popup">
+      <div class="description">
+        <a>Are you sure to delete this color ?</a>
+      </div>
+      <div class="delete-buttons">
+        <div id="delete-color-button">
+          <a>Delete color</a>
+        </div>
+        <div id="cancel-delete-color">
+          <a>Cancel</a>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

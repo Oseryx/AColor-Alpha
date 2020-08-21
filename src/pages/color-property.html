@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Property</title>
+    <link rel="stylesheet" href="css/tilebar.css">
+    <link rel="stylesheet" href="css/color-property.css">
+    <script type="module" src="js/color-property.js"></script>
+    <script src="js/colors/utils.js"></script>
+</head>
+<body id="body">
+    <!-- Menu -->
+    <div class="menu">
+        <div class="options">
+          <a>Color Property</a>
+        </div>
+        <div class="window-buttons">
+            <div class="minimize" id="minimize">
+                <img src="../../assets/img/window-minimize-solid.svg" alt="">
+              </div>
+              <div class="pin-window" id="pin">
+                <img src="../../assets/img/thumbtack-solid.svg" alt="">
+              </div>
+              <div class="close" id="close">
+                <img src="../../assets/img/times-solid.svg" alt="">
+              </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <div class="names">
+        <div class="names-content">
+          <div class="color-name">
+            <a>Color: </a>
+            <a class="name" id="color-name" contenteditable="true" spellcheck="false"> Redstel</a>
+          </div>
+          <div class="book-name">
+            <a>Book name: </a>
+            <a class="name" id="book-name"> Pals</a>
+          </div>
+        </div>
+        <div id="preview"></div>
+      </div>
+
+      <div class="color-preview">
+        <div class="info">
+          <select name="" id="color-mode">
+            <option value="0">HEX</option>
+            <option value="1">RGB</option>
+            <option value="2">HSL</option>
+            <option value="3">HSV</option>
+          </select>
+          <div class="color-value" id="color-value-container">
+            <a id="color-value">#ffffff</a>
+          </div>
+        </div>
+        <div class="edit">
+          <div class="chromatic">
+            <img src="../../assets/img/chromatic-circle.svg" alt="" id="chromatic">
+          </div>
+          <div class="eyedropper">
+            <img src="../../assets/img/dropper.svg" alt="" id="eyedropper">
+          </div>
+        </div>
+      </div>
+
+      <div class="variants-box">
+        <a>Variants: </a>
+        <div class="variants">
+          <div class="variant-box" id="gradients">
+            <!-- <div style="background: #097aa7;"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div>
+            <div style="background: rgb(9, 122, 167);"></div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right click mouse menu -->
+    <div class="menu-mouse hide-menu" id="menu">
+      <div id="replace">
+        <a>Set as new color</a>
+      </div>
+      <div id="add">
+        <a>Add to color book</a>
+      </div>
+    </div>
+
+    <!-- Popup of the picker after picking a color from the screen -->
+    <div class="color-pick hide-pick-popup" id="color-pick">
+      <a class="title">Are you sure to replace actual color by the picked one ? Or save it in the same file</a>
+      <div class="pick-preview">
+        <div id="picked-color"></div>
+      </div>
+      <div class="buttons">
+        <div id="replace-by-picked">
+          <a>Replace</a>
+        </div>
+        <div id="add-color">
+          <a>Save</a>
+        </div>
+        <div id="cancel-pick">
+          <a>Cancel</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- New color name's popup -->
+    <div class="color-name-popup hide-new-color-popup" id="color-popup">
+      <div class="inputs">
+        <a>Color name (optional): </a>
+        <input type="text" name="" id="new-color-name" placeholder="Color name" spellcheck="false">
+      </div>
+      <div class="buttons">
+        <div class="button" id="add-color-name-btn">
+          <a>Add new Color</a>
+        </div>
+        <div class="button" id="cancel-new-color">
+          <a>Cancel</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup after selecting replace button in gradients -->
+    <div class="replace-actual-color hide-replace-actual-color" id="replace-actual-color">
+      <a>Are you sure to replace actual color ?</a>
+      <div class="preview-replace">
+        <div id="replace-gradient"></div>
+      </div>
+      <div class="buttons">
+        <div id="replace-color-gradient">
+          <a>Replace</a>
+        </div>
+        <div id="cancel-replace-gradient">
+          <a>Cancel</a>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

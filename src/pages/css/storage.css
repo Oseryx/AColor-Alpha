@@ -1,0 +1,353 @@
+::-webkit-scrollbar{
+    height: 10px;
+    width: 7px;
+    background-color: #0f0f0f;
+    z-index: 10000;
+}
+::-webkit-scrollbar-thumb{
+    background-color: rgb(71, 70, 70);
+    z-index: 10000;
+}
+body{
+    background: rgb(22, 21, 21);
+    color: white;
+}
+.content-page{
+    width: 100vw;
+    height: calc(100vh - 30px);
+    display: flex;
+    font-size: 13px;
+}
+.folders{
+    width: 150px;
+    height: 100%;
+    overflow: auto;
+    background-color: #292626;
+}
+.folders .container{
+    margin-left: 10px;
+}
+.folder{
+    width: min-content;
+    white-space: nowrap;
+    transition: all 0.5s ease;
+}
+.name{
+    display: flex;
+    height: 20px;
+    align-items: center;
+}
+.name a{
+    cursor: pointer;
+}
+.name a:focus{
+    background-color: #0f0f0f;
+}
+.folders img{
+    filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+    min-width: 20px;
+    max-width: 20px;
+    min-height: 20px;
+    max-height: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.sub-folders{
+    position: relative;
+    min-height: min-content;
+    max-height: min-content;
+    left: 10px;
+}
+.empty img{
+    min-width: 10px;
+    max-width: 10px;
+    min-height: 10px;
+    max-height: 10px;
+    margin-right: 2px;
+}
+.empty a{
+    font-size: 12px;
+}
+.hide > .sub-folders{
+    display: none;
+}
+.colors{
+    width: 250px;
+    height: 100%;
+    overflow: auto;
+}
+.colors .container{
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+.color{
+    margin-top: 7px;
+    margin-left: 7px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.6s ease;
+}
+.color:hover{
+    border-radius: 30%;
+    transition: all 0.6s ease;
+}
+.color-add{
+    margin-top: 7px;
+    margin-left: 7px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: white dotted 1.5px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.6s ease;
+}
+.color-add a{
+    color: white;
+    font-size: 36px;
+    position: relative;
+    top: -2px;
+}
+.color-add:hover{
+    border-radius: 30%;
+    transition: all 0.6s ease;
+}
+.dropdown-menu{
+    position: fixed;
+    top: 100px;
+    left: 100px;
+    width: 125px;
+    height: 100px;
+    background-color: #0f0f0f;
+}
+.dropdown-menu .item{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 25px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+.dropdown-menu .item a{
+    margin-left: 5%;
+    width: 100%;
+    font-size: 12px;
+}
+.dropdown-menu .item img{
+    margin-left: 5%;
+    min-width: 15px;
+    max-width: 15px;
+    min-height: 15px;
+    max-height: 15px;
+    filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+}
+.dropdown-menu .item:hover{
+    background-color: #292626;
+    transition: all 0.5s ease;
+}
+.popup{
+    position: fixed;
+    top: calc(50vh - 50px);
+    left: calc(50vw - 100px);
+    width: 200px;
+    height: 80px;
+    border-radius: 5px;
+    background-color: #030303df;
+    opacity: 1;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+.popup a{
+    margin-top: 7px;
+}
+.popup input{
+    margin-top: 3px;
+    width: 150px;
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+    background-color: #29262667;
+    text-indent: 5px;
+    color: #757575;
+}
+.hide-file-name {
+    top: -200px;
+    opacity: 0;
+    transition: top 0.1s ease,
+                opacity 0.2s 0.2s ease;
+}
+.delete-file{
+    display: flex;
+    justify-content: center;
+}
+.popup-delete{
+    opacity: 1;
+    position: fixed;
+    top: calc(50vh - 50px);
+    left: calc(50vw - 125px);
+    width: 250px;
+    height: 90px;
+    border-radius: 5px;
+    background-color: #030303df;
+    opacity: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+.delete-buttons div{
+    width: 85px;
+    height: 30px;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.description a{
+    margin-top: 7px;
+}
+.popup-delete div a{
+    margin-bottom: 3px;
+}
+.description{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.delete-buttons{
+    width: 100%;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+#delete:hover{
+    background-color: rgb(219, 66, 66);
+    transition: all 0.5s ease;
+}
+#delete-file{
+    background-color: rgb(219, 66, 66);
+    transition: all 0.5s ease;
+}
+#cancel-delete{
+    background-color: #292626;
+    transition: all 0.5s ease;
+}
+#delete-file:hover{
+    background-color: rgb(248, 36, 36);
+    transition: all 0.5s ease;
+}
+#cancel-delete:hover{
+    background-color: #363232;
+    transition: all 0.5s ease;
+}
+#primary-file-add{
+    display: flex;
+    height: 25px;
+    align-items: center;
+    cursor: pointer;
+}
+#primary-file-add img{
+    margin-left: 1px;
+    min-width: 16.5px;
+    max-width: 16.5px;
+    min-height: 16.5px;
+    max-height: 16.5px;
+}
+.color-dropdown-menu{
+    position: fixed;
+    top: 100px;
+    left: 200px;
+    width: 125px;
+    height: 50px;
+    background-color: #0f0f0f;
+    display: flex;
+    flex-direction: column;
+}
+.color-dropdown-menu .item{
+    width: 100%;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+.color-dropdown-menu .item img{
+    margin-left: 5%;
+    min-width: 15px;
+    max-width: 15px;
+    min-height: 15px;
+    max-height: 15px;
+    filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+}
+.color-dropdown-menu .item a{
+    margin-left: 5%;
+    width: 100%;
+    font-size: 12px;
+}
+.color-dropdown-menu .item:hover{
+    background-color: #292626;
+    transition: all 0.5s ease;
+}
+#delete-color:hover{
+    background-color: rgb(219, 66, 66);
+    transition: all 0.5s ease;
+}
+.hide-color-menu{
+    display: none;
+}
+.popup-delete-color{
+    opacity: 1;
+    position: fixed;
+    top: calc(50vh - 50px);
+    left: calc(50vw - 137.5px);
+    width: 275px;
+    height: 90px;
+    border-radius: 5px;
+    background-color: #030303df;
+    opacity: 1;
+    font-size: 14px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+#delete-color-button{
+    background-color: rgb(219, 66, 66);
+    transition: all 0.5s ease;
+}
+#cancel-delete-color{
+    background-color: #292626;
+    transition: all 0.5s ease;
+}
+#delete-color-button:hover{
+    background-color: rgb(248, 36, 36);
+    transition: all 0.5s ease;
+}
+#cancel-delete-color:hover{
+    background-color: #363232;
+    transition: all 0.5s ease;
+}
+.hide-popup-delete{
+    top: -200px;
+    opacity: 0;
+    transition: top 0.1s ease,
+                all 0.2s 0.2s ease;
+}
+.hide-menu{
+    display: none;
+}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Color Picker</title>
+  <link rel="stylesheet" href="css/colorpicker.css">
+  <link rel="stylesheet" href="css/tilebar.css">
+  <script src="js/colors/utils.js"></script>
+  <script type="module" src="js/colors/color-hsl.js"></script>
+  <script type="module" src="js/colorpicker.js"></script>
+  <script type="module" src="js/colorpicker-saving-system.js"></script>
+</head>
+
+<body>
+  <div class="menu">
+    <div class="options">
+      <a>Color Picker</a>
+      <div class="option">
+        <img src="../../assets/img/dropper.svg" alt="" id="eyedropper">
+      </div>
+      <div class="option">
+        <img src="../../assets/img/preview.svg" alt="">
+      </div>
+      <div class="option">
+        <img src="../../assets/img/folder.svg" alt="" id="storage">
+      </div>
+      <div class="option">
+        <img src="../../assets/img/information.svg" alt="">
+      </div>
+      <div class="option">
+        <img src="../../assets/img/settings (1).svg" alt="">
+      </div>
+    </div>
+    <div class="window-buttons">
+      <div class="minimize" id="minimize">
+        <img src="../../assets/img/window-minimize-solid.svg" alt="">
+      </div>
+      <div class="pin-window" id="pin">
+        <img src="../../assets/img/thumbtack-solid.svg" alt="">
+      </div>
+      <div class="close" id="close">
+        <img src="../../assets/img/times-solid.svg" alt="">
+      </div>
+    </div>
+  </div>
+  <div class="page">
+    <div class="color-editing">
+      <div class="color-picker-system">
+        <canvas id="preview" width="255px" height="255px" class="preview"></canvas>
+        <div class="inputs-outputs">
+          <div class="parameters">
+            <a class="colour-select">Select Colour: </a>
+            <div class="range" id="range-container">
+              <canvas id="range" width="200px" height="50px"></canvas>
+              <div class="bg"></div>
+              <div class="pointer">
+                <div class="selector" id="selector"></div>
+              </div>
+            </div>
+            <a id="transparency">Opacity: 1</a>
+            <input type="range" name="" min="0" max="100" id="alpha" value="100">
+          </div>
+          <div class="color-preview-box">
+            <div id="color" class="color"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="color-options">
+      <!-- <input type="checkbox" name="Calulate Saturation" id="calculate-saturation"> -->
+      <a class="color-option-title">Color Properties</a>
+      <div class="color-code">
+        <div class="color-option rgba">
+          <div class="color-option-name">
+            <a>Hex: </a>
+          </div>
+          <input spellcheck="false" type="text" name="Hex" id="hex">
+          
+          <div class="color-option-name">
+            <a>RGB/RGBA: </a>
+          </div>
+          <input spellcheck="false" type="text" name="RGBA" id="rgb">
+          
+          <div class="color-option-name">
+            <a>HSL/HSLA: </a>
+          </div>
+          <input spellcheck="false" type="text" name="" id="hsl">
+          
+          <div class="color-option-name">
+            <a>HSV/HSVA: </a>
+          </div>
+          <input spellcheck="false" type="text" name="" id="hsv">
+        </div>
+      </div>
+      <!-- actions -->
+      <div class="actions" id="actions">
+        <div id="save-color-action" class="save-color">
+          <a>Save</a>
+        </div>
+        <!-- <div class="edit-color-actions">
+          <div class="update-color" id="update-color">
+            <a>Save</a>
+          </div>
+        </div>
+        <div class="cancel-actions" id="cancel-editing">
+          <a>Cancel</a>
+        </div> -->
+      </div>
+    </div>
+
+    <!-- Save color popup -->
+    <div class="popup hide-popup" id="save-color-popup">
+      <div class="color-name">
+        <a>Color name (optional): </a>
+        <input spellcheck="false" type="text" name="Color name" id="color-name" placeholder="Color name">
+      </div>
+      <div class="folder-selection" id="expand">
+        <div class="folder">
+          <div class="current-folder expander">
+            <!-- <a>Test1/test5</a> -->
+
+            <div class="folders expander chosen-folder" id="folders">
+              <!-- <div class="folder-item">
+                <div class="name">
+                  <img src="../../assets/img/folder-open.svg" alt="">
+                  <a spellcheck="false">
+                    Pastel
+                  </a>
+                </div>
+                <div class="sub-folders">
+                  <div class="folder-item">
+                    <div class="name">
+                      <img src="../../assets/img/folder-open.svg" alt="">
+                      <a spellcheck="false">
+                        Pastel
+                      </a>
+                    </div>
+                    <div class="sub-folders hide-sub-folders">
+                      <div class="folder-item">
+                        <div class="name">
+                          <img src="../../assets/img/folder-open.svg" alt="">
+                          <a spellcheck="false">
+                            Pastel
+                          </a>
+                        </div>
+                        <div class="sub-folders">
+                          <div class="add-folder">
+                            <img src="../../assets/img/add-folder.svg" alt="">
+                            <a spellcheck="false">Add File</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+
+          </div>
+          <div class="expand-folder expander">
+            <img class="expander img-expander" src="../../assets/img/arrow.svg" alt="expand">
+          </div>
+        </div>
+      </div>
+      <div class="buttons">
+        <div class="save" id="save-color-button"
+          <a>Save</a>
+        </div>
+        <div class="cancel-saving" id="cancel-save-color-button">
+          <a>Cancel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

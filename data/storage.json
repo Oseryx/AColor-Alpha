@@ -1,0 +1,71 @@
+{
+  "storage": [
+    {
+      "bookName": "Pastel",
+      "subBooks": [],
+      "colors": [
+        {
+          "colorName": "Red Pastelle",
+          "colorHex": "#50322a"
+        },
+        {
+          "colorName": ";)",
+          "colorHex": "#52342f"
+        },
+        {
+          "colorName": ":yay:",
+          "colorHex": "#cfb3b9"
+        },
+        {
+          "colorName": "y",
+          "colorHex": "#50343a"
+        },
+        {
+          "colorName": "",
+          "colorHex": "#956160"
+        },
+        {
+          "colorName": "",
+          "colorHex": "#3b3072"
+        },
+        {
+          "colorName": "",
+          "colorHex": "#90928f"
+        }
+      ],
+      "isHidden": true
+    },
+    {
+      "bookName": "t",
+      "subBooks": [
+        {
+          "bookName": "f",
+          "subBooks": [],
+          "colors": [],
+          "isHidden": true
+        },
+        {
+          "bookName": "jonervdx",
+          "subBooks": [],
+          "colors": [],
+          "isHidden": true
+        }
+      ],
+      "colors": [],
+      "isHidden": true
+    },
+    {
+      "bookName": "Yay",
+      "subBooks": [
+        {
+          "bookName": "h",
+          "subBooks": [],
+          "colors": [],
+          "isHidden": true
+        }
+      ],
+      "colors": [],
+      "isHidden": false
+    }
+  ]
+}

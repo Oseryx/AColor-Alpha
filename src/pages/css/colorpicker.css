@@ -1,0 +1,538 @@
+::-webkit-scrollbar{
+  height: 10px;
+  width: 7px;
+  background-color: #0f0f0f;
+  z-index: 10000;
+}
+::-webkit-scrollbar-thumb{
+  background-color: rgb(71, 70, 70);
+  z-index: 10000;
+}
+*, *::before, *::after{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: Ubuntu;
+  color: white;
+  background-color: rgb(22, 21, 21);
+  user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+/*Content of the page*/
+.page{
+  width: 100vw;
+  height: calc(100vh - 30px);
+  display: flex;
+}
+.color-editing{
+  width: calc(100% - 200px);
+  height: 100%;
+}
+.color-options{
+  width: 200px;
+  height: 100%;
+  background-color: #292626;
+}
+.color-picker-system {
+  /* width: 300px;
+  height: 400px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(22, 21, 21);
+
+  -webkit-touch-callout: none; /* iOS Safari */
+}
+
+.color-picker-system .preview {
+  margin-top: 25px;
+  width: 255px;
+  height: 150px;
+  border-radius: 3px;
+}
+.color-picker-system .inputs-outputs {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+.color-picker-system .color-preview-box{
+  width: 70px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+.color-picker-system #color {
+  width: 50px;
+  height: 50px;
+  /* margin-top: 11px;
+  margin-left: 10px; */
+  border-radius: 3px;
+  background-color: var(--chosed-color);
+}
+
+.color-picker-system #range {
+  position: absolute;
+  visibility: hidden;
+}
+.color-picker-system .parameters{
+  width: 100% - 70px;
+  display: flex;
+  flex-direction: column;
+}
+.color-picker-system a.colour-select{
+  margin-bottom: 7px;
+}
+.color-picker-system a{
+  color: white;
+  font-family: 'Ubuntu';
+}
+
+.color-picker-system .range {
+  width: 200px;
+  height: 30px;
+}
+
+.color-picker-system .pointer {
+  position: absolute;
+  width: 200px;
+  height: 35px;
+}
+
+.color-picker-system .selector {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  left: 0px;
+  background-color: rgba(255, 255, 255, 0.185);
+  border: 1px solid white;
+  cursor: pointer;
+  position: absolute;
+  top: -5px;
+}
+
+.color-picker-system .bg {
+  position: absolute;
+  width: 200px;
+  height: 5px;
+  background: linear-gradient(to right, red 0%, #ff0 17%, lime 33%, cyan 50%, blue 66%, #f0f 83%, red 100%);
+  border-radius: 5px;
+}
+.color-picker-system #alpha[type=range]{
+  width: 200px;
+}
+.color-picker-system #alpha input[type=range]::-webkit-slider-runnable-track{
+  height: 5px;
+  background-color: rgb(219, 215, 215);
+}
+
+/*Color Properties*/
+.color-option-title{
+  width: 100%;
+  height: 30px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.color-option{
+  font-size: 13px;
+  width: 95%;
+  margin-left: 5.5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.color-options input{
+  outline: none;
+  margin-top: 4px;
+  height: 25px;
+  width: 180px;
+  font-weight: bold;
+  border-radius: 7px;
+  color: #a7a7a7;
+  font-size: 13px;
+  border: none;
+  text-align: center;
+  background-color: #0f0f0f7e;
+}
+.color-option-name{
+  margin-top: 5px;
+  margin-left: 5%;
+  width: 95%;
+}
+/* ----------------------------------------------- */
+/*                                                 */
+/* ----------------------------------------------- */
+#actions{
+  position: absolute;
+  bottom: 0;
+  width: 200px;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+.edit-color-actions{
+  width: 100%;
+  height: 25px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.edit-color-actions div{
+  width: 95%;
+  height: 100%;
+  background-color: rgba(12, 12, 12, 0.796);
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+#save-color-action{
+  cursor: pointer;
+}
+#cancel-editing{
+  width: 95%;
+  height: 25px;
+  position: relative;
+  top: -3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #1d1818;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.save-color{
+  width: 90%;
+  height: 25px;
+  border-radius: 5px;
+  background-color: rgba(12, 12, 12, 0.796);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup{
+  width: 300px;
+  position: fixed;
+  top: calc(50vh - 55px);
+  left: calc((100vw - 200px) / 2 - 150px);
+  height: 110px;
+  border-radius: 5px;
+  background-color: rgba(12, 12, 12, 0.993);
+  transition: all 0.5s ease;
+}
+.popup:not(.expand-popup){
+  height: 110px;
+  top: calc(50vh - 55px);
+  animation: shrink ease 0.5s;
+  animation-iteration-count: 1;
+}
+.color-name{
+  position: relative;
+  top: 4px;
+  width: 100%;
+  height: 35px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.color-name a{
+  font-size: 14px;
+}
+.color-name input{
+  width: 125px;
+  height: 25px;
+  border: none;
+  border-radius: 5px;
+  background-color: #292626;
+  text-indent: 5px;
+  color: #757575;
+}
+.folder-selection{
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.folder-selection .folder{
+  width: 150px;
+  height: 25px;
+  border-radius: 5px;
+  background-color: #292626;
+  display: flex;
+}
+.folder-selection .folder .current-folder{
+  width: 83.4%;
+  height: 100%;
+  font-size: 12px;
+  text-indent: 4px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid rgba(12, 12, 12, 0.931);
+  cursor: pointer;
+}
+:not(.expand-popup) .folder-selection{
+  height: 40px;
+  animation: folderBoxShrink ease 0.5s;
+  animation-iteration-count: 1;
+}
+:not(.expand-popup) .folder-selection .folder{
+  animation: folderShrink ease 0.5s;
+  animation-iteration-count: 1;
+}
+:not(.expand-popup) .folder-selection .folder .current-folder{
+  width: 83.4%;
+  border-right: 1px solid rgba(12, 12, 12, 0.931);
+  animation: shrinkCurrentFolder 0.5s ease;
+  animation-iteration-count: 1;
+}
+.folder-selection .folder .expand-folder{
+  width: 16.6%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.folder-selection .folder img:not(.add-folder-img):not(.img-expander){
+  min-width: 20px;
+  max-width: 20px;
+  min-height: 20px;
+  max-height: 20px;
+  filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+  transition: all 0.3s ease;
+}
+.img-expander{
+  min-width: 10px;
+  max-width: 10px;
+  min-height: 10px;
+  max-height: 10px;
+  filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+  transition: all 0.3s ease;
+}
+.folder-selection .folder:hover .expand-folder img{
+  transform: rotateZ(90deg);
+  transition: all 0.3s ease;
+}
+.expand-popup .folder-selection .expand-folder img{
+  transform: rotateZ(90deg);
+  transition: all 0.3s ease;
+}
+.popup .buttons{
+  position: relative;
+  top: 3px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+.buttons div{
+  width: 80px;
+  height: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.buttons .save{
+  border-radius: 5px;
+  background-color: #292626;
+}
+.buttons .cancel-saving{
+  border-radius: 5px;
+  background-color: #333232;
+}
+.expand-popup{
+  height: 300px;
+  top: calc(50vh - 150px);
+  animation: expand ease 0.5s;
+  animation-iteration-count: 1;
+}
+.expand-popup .folder-selection{
+  height: 230px;
+  animation: folderBoxExpand ease 0.5s;
+  animation-iteration-count: 1; 
+}
+.expand-popup .folder-selection .folder{
+  width: 250px;
+  height: 200px;
+  animation: folderExpand ease 0.5s;
+  animation-iteration-count: 1;
+}
+.expand-popup .folder-selection .folder .expand-folder{
+  width: 0%;
+  animation: shrinkFolder ease 0.5s;
+  animation-iteration-count: 1;
+}
+.expand-popup .folder-selection .folder .expand-folder img{
+  display: none;
+}
+.expand-popup .folder-selection .folder .current-folder{
+  width: 100%;
+  border-right: 0px solid rgba(12, 12, 12, 0.931);
+  animation: expandCurrentFolder 0.5s ease;
+  animation-iteration-count: 1;
+}
+.selected-folder{
+  color: #757575;
+}
+.current-folder .folders{
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.chosen-folder{
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+.folders .folder-item{
+  position: relative;
+  /* top: 3px; */
+  width: min-content;
+  margin-left: 5px;
+}
+.folder-item .name{
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.add-folder{
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: min-content;
+  margin-left: 7px;
+  white-space: nowrap;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+.add-folder-img{
+  min-width: 14px;
+  max-width: 14px;
+  min-height: 14px;
+  max-height: 14px;
+  filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+}
+.folder-item .name{
+  display: flex;
+}
+.hide-sub-folders{
+  display: none;
+}
+.hide-popup{
+  left: 900px;
+  transition: all 0.5s ease;
+}
+
+@keyframes expand{
+  0%{
+    top: calc(50vh - 55px);
+    height: 110px;
+  }
+  100%{
+    top: calc(50vh - 150px);
+    height: 300px;
+  }
+}
+@keyframes shrink{
+  0%{
+    top: calc(50vh - 150px);
+    height: 300px;
+  }
+  100%{
+    top: calc(50vh - 55px);
+    height: 110px;
+  }
+}
+/*Folder Box*/
+@keyframes folderBoxExpand{
+  0%{
+    height: 40px;
+  }
+  100%{
+    height: 230px;
+  }
+}
+@keyframes folderBoxShrink{
+  0%{
+    height: 230px;
+  }
+  100%{
+    height: 40px;
+  }
+}
+/*Folder*/
+@keyframes folderExpand{
+  0%{
+    width: 150px;
+    height: 25px;
+  }
+  100%{
+    width: 250px;
+    height: 200px;
+  }
+}
+@keyframes folderShrink{
+  0%{
+    width: 250px;
+    height: 200px;
+  }
+  100%{
+    width: 150px;
+    height: 25px;
+  }
+}
+/*Current folder*/
+@keyframes expandCurrentFolder{
+  0%{
+    width: 83.4%;
+    border-right: 1px solid rgba(12, 12, 12, 0.931);
+  }
+  100%{
+    width: 100%;
+    border-right: 0px solid rgba(12, 12, 12, 0.931);
+  }
+}
+@keyframes shrinkCurrentFolder{
+  0%{
+    width: 100%;
+    border-right: 0px solid rgba(12, 12, 12, 0.931);
+  }
+  100%{
+    width: 83.4%;
+    border-right: 1px solid rgba(12, 12, 12, 0.931);
+  }
+}
+/*Expander*/
+@keyframes shrinkExpander{
+  0%{
+    width: 16.6%;
+  }
+  100%{
+    width: 0%;
+  }
+}
+@keyframes restExpander{
+  0%{
+    width: 0%;
+  }
+  100%{
+    width: 16.6%;
+  }
+}

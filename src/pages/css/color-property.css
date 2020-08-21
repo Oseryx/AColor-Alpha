@@ -1,0 +1,365 @@
+body{
+    background-color: rgb(22, 21, 21);
+    outline: none;
+}
+.content{
+    height: calc(100vh - 30px);
+    color: white;
+    font-size: 16px;
+}
+.names{
+    padding-top: 10px;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    flex-direction: row;
+}
+.names-content div{
+    width: calc(100vw - 110px);
+    margin-left: calc(5vw + 5px);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.name{
+    padding-left: 5px;
+    font-size: 14px;
+    color: #a7a7a7;
+}
+#preview{
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: #d64141;
+}
+.color-preview{
+    width: 90vw;
+    margin-left: 5vw;
+    display: flex;
+}
+.info{
+    width: 65vw;
+    display: flex;
+}
+select{
+    border-radius: 5px 0px 0px 5px;
+    height: 27px;
+    width: 55px;
+    background-color: #050505;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+}
+option{
+    border: none;
+    outline: none;
+    background-color: #050505;
+}
+.color-value{
+    width: 125px;
+    height: 27px;
+    border-radius: 0px 5px 5px 0px;
+    color: #a7a7a7;
+    background-color: #050505;
+    margin-left: 1px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+#color-value{
+    margin-left: 5px;
+    font-size: 12px;
+}
+.edit{
+    width: 20vw;
+    display: flex;
+}
+.edit div{
+    width: 40px;
+    height: 26px;
+    background-color: #050505;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.edit div img{
+    min-width: 17px;
+    min-height: 17px;
+    max-width: 17px;
+    max-height: 17px;
+    filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+}
+.eyedropper{
+    border-radius: 0 5px 5px 0;
+    margin-left: 1px;
+}
+.chromatic{
+    border-radius: 5px 0 0 5px;
+}
+.variants-box{
+    margin-top: 10px;
+    width: 100vw;
+}
+.variants-box a{
+    margin-left: calc(5vw + 5px);
+}
+.variant-box{
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.variant-box div{
+    width: 30px;
+    height: 30px;
+    border-radius: 1px;
+    margin-left: 2px;
+    margin-top: 2px;
+    cursor: pointer;
+}
+#menu{
+    position: fixed;
+    top: 100px;
+    left: 50px;
+    width: 125px;
+    height: 50px;
+    background-color: #0f0f0f;
+    color: white;
+    font-size: 12px;
+}
+.menu-mouse div{
+    height: 25px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+.menu-mouse div a{
+    margin-left: 5px;
+}
+.menu-mouse div:hover{
+    background-color: #292626;
+    transition: all 0.5s ease;
+}
+.hide-menu{
+    display: none;
+}
+.color-pick{
+    position: fixed;
+    top: 87.5px;
+    left: 12.5px;
+    width: 275px;
+    height: 125px;
+    background-color: #050505;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: all 0.5s ease;
+}
+.color-pick .title{
+    width: 80%;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+}
+.color-pick .pick-preview{
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.color-pick .pick-preview div{
+    width: 30px;
+    height: 30px;
+    background-color: red;
+    border-radius: 3px;
+}
+.color-pick .buttons{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.color-pick .buttons div{
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+#replace-by-picked{
+    width: 80px;
+    background-color: #292626;
+}
+#add-color{
+    width: 80px;
+    background-color: #292626;
+}
+#cancel-pick{
+    background-color: rgb(219, 66, 66);
+    width: 80px;
+}
+#replace-by-picked:hover{
+    background-color: #363232;
+    transition: all 0.5s ease;
+}
+#add-color:hover{
+    background-color: #363232;
+    transition: all 0.5s ease;
+}
+#cancel-pick:hover{
+    background-color: rgb(248, 36, 36);
+    transition: all 0.5s ease;
+}
+.color-name-popup{
+    position: fixed;
+    top: 87.5px;
+    left: 12.5px;
+    width: 275px;
+    height: 85px;
+    background-color: #050505;
+    border-radius: 5px;
+    font-size: 14px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: all 0.5s ease;
+}
+.color-name-popup .inputs{
+    width: 100%;
+    height: 35px;
+    padding-bottom: 7px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.color-name-popup .inputs input{
+    width: 105px;
+    height: 25px;
+    border: none;
+    border-radius: 5px;
+    background-color: #292626;
+    text-indent: 5px;
+    color: #757575;
+}
+.color-name-popup .buttons{
+    width: 100%;
+    height: 27px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.color-name-popup .buttons div{
+    width: 100px;
+    height: 27px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+#add-color-name-btn{
+    background-color: #292626;
+    transition: all 0.5s ease;
+}
+#add-color-name-btn:hover{
+    background-color: #363232;
+    transition: all 0.5s ease;
+}
+#cancel-new-color{
+    background-color: rgb(219, 66, 66);
+    transition: all 0.5s ease;
+}
+#cancel-new-color:hover{
+    background-color: rgb(248, 36, 36);
+    transition: all 0.5s ease;
+}
+.hide-pick-popup{
+    top: -100vh;
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.hide-new-color-popup{
+    top: -100vh;
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+.replace-actual-color{
+    position: fixed;
+    top: 100px;
+    left: 12.5px;
+    width: 275px;
+    height: 100px;
+    background-color: #050505;
+    border-radius: 5px;
+    font-size: 14px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: all 0.5s ease;
+}
+.preview-replace{
+    width: 100%;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+}
+#replace-gradient{
+    margin-top: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 2px;
+    background-color: red;
+}
+.replace-actual-color .buttons{
+    width: 100%;
+    display: flex;
+    height: 50px;
+    justify-content: space-around;
+    align-items: center;
+}
+.replace-actual-color .buttons div{
+    width: 90px;
+    height: 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#replace-color-gradient{
+    background-color: #292626;
+    transition: all 0.5s ease;
+}
+#replace-color-gradient:hover{
+    background-color: #363232;
+    transition: all 0.5s ease;
+}
+#cancel-replace-gradient{
+    background-color: rgb(219, 66, 66);
+    transition: all 0.5s ease;
+}
+#cancel-replace-gradient:hover{
+    background-color: rgb(248, 36, 36);
+    transition: all 0.5s ease;
+}
+.hide-replace-actual-color{
+    top: -100vh;
+    opacity: 0;
+    transition: all 0.5s ease;
+}

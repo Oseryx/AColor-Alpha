@@ -1,0 +1,91 @@
+@font-face{
+    font-family: Ubuntu;
+    src: url('../../../assets/fonts/Ubuntu.woff2');
+}
+*, *::before, *::after{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Ubuntu;
+    outline: none;
+    user-select: none;
+}
+.menu{
+    height: 100vw;
+    height: 30px;
+    display: flex;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+    background-color: #0f0f0f;
+}
+.options{
+    width: calc(100vw - 60px);
+    height: 30px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    flex-direction: row;
+}
+.options a{
+    margin-left: 30px;
+    margin-right: 20px;
+    font-family: Ubuntu;
+    color: white;
+}
+.option{
+    margin-left: 15px;
+    width: 20px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+}
+.option img{
+    -webkit-app-region: no-drag;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+}
+.window-buttons{
+    position: absolute;
+    right: 0px;
+    width: 60px;
+    height: 30px;
+    display: flex;
+}
+.window-buttons div{
+    width: 30px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.minimize img{
+    min-width: 20px;
+    min-height: 10px;
+    max-width: 20px;
+    max-height: 10px;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+    filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+}
+.close img{
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+    filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+}
+.pin-window img{
+    margin-left: -2px;
+    min-width: 13px;
+    min-height: 13px;
+    max-width: 13px;
+    max-height: 13px;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+    filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+}
