@@ -66,6 +66,12 @@
       ],
       "colors": [],
       "isHidden": false
+    },
+    {
+      "bookName": "test",
+      "subBooks": [],
+      "colors": [],
+      "isHidden": true
     }
   ]
 }

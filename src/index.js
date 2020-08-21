@@ -80,6 +80,7 @@ function registerShortcuts() {
 
 app.on('will-quit', () => {
   globalShortcut.unregisterAll();
+  storageManager.writeStorage();
 });
 
 app.on('activate', () => {
