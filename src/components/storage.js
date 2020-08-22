@@ -4,6 +4,14 @@ let storage = readStorage();
 let storageCopy = readStorage();
 
 function readStorage(){
+    if(!fs.existsSync('./data/storage.json')){
+        fs.mkdirSync('./data');
+        fs.writeFileSync('./data/storage.json', JSON.stringify({ storage: []}, null, 2));
+
+        return {
+            storage: []
+        }
+    }
     return JSON.parse(fs.readFileSync('./data/storage.json', 'utf-8'));
 }
 

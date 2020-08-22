@@ -30,7 +30,13 @@ function initStorage(){
 
     document.getElementById('folders').appendChild(addPrimaryFile);
 
-    if(document.getElementsByClassName('name')[0]) setColors(0);
+    if(document.getElementsByClassName('name')[0]){
+        setColors(0);
+        
+        document.getElementById('add-to-color-book').addEventListener('click', () => {
+            ipcRenderer.send('toAddToColorBook', activeFileIndex);        
+        });
+    } 
 
     document.getElementById('primary-file-add').addEventListener('click', () => {
         targetIndex = -1;
@@ -39,9 +45,6 @@ function initStorage(){
         document.getElementById('new-file-name').focus();
     });
 
-    document.getElementById('add-to-color-book').addEventListener('click', () => {
-        ipcRenderer.send('toAddToColorBook', activeFileIndex);        
-    });
 }
 
 //Cheked
