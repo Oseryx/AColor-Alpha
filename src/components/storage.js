@@ -1,4 +1,5 @@
 const fs = require('fs');
+const lodash = require('lodash');
 
 let storage = readStorage();
 let storageCopy = readStorage();
@@ -103,6 +104,12 @@ function moveFolder(folderPath, newPath){
         storage.storage.splice(folderPath[0], 1);
     }
 
+    if(newPath === -1){
+        storage.storage.push(folder);
+        moveCopy(folderPath, newPath);
+        return;
+    }
+
     location = storage.storage[newPath[0]];
     if(newPath.length > 1){
         for(let i = 1; i < newPath.length; i++){
@@ -110,8 +117,35 @@ function moveFolder(folderPath, newPath){
         }
     }
     location.subBooks.push(folder);
-    //console.log(location);
+    moveCopy(folderPath, newPath);
+}
 
+function moveCopy(folderPath, newPath){
+    let location = storageCopy.storage[folderPath[0]];
+    let folder = storageCopy.storage[folderPath[0]];
+    if(folderPath.length > 1){
+        for(let i = 1; i < folderPath.length - 1; i++){
+            location = location.subBooks[folderPath[i]];
+        }
+        folder = location.subBooks[folderPath[folderPath.length - 1]];
+        location.subBooks.splice(folderPath[folderPath.length - 1], 1);
+    }
+    else{
+        storageCopy.storage.splice(folderPath[0], 1);
+    }
+
+    if(newPath === -1){
+        storageCopy.storage.push(folder);
+        return;
+    }
+
+    location = storageCopy.storage[newPath[0]];
+    if(newPath.length > 1){
+        for(let i = 1; i < newPath.length; i++){
+            location = location.subBooks[newPath[i]];
+        }
+    }
+    location.subBooks.push(folder);
 }
 
 function deleteFile(path){

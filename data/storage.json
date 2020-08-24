@@ -2,7 +2,20 @@
   "storage": [
     {
       "bookName": "Pastel",
-      "subBooks": [],
+      "subBooks": [
+        {
+          "bookName": "Blue",
+          "subBooks": [],
+          "colors": [],
+          "isHidden": false
+        },
+        {
+          "bookName": "Pinks",
+          "subBooks": [],
+          "colors": [],
+          "isHidden": true
+        }
+      ],
       "colors": [
         {
           "colorName": "Red Pastelle",
@@ -29,50 +42,20 @@
           "colorHex": "#3b3072"
         }
       ],
-      "isHidden": true
-    },
-    {
-      "bookName": "t",
-      "subBooks": [
-        {
-          "bookName": "f",
-          "subBooks": [],
-          "colors": [],
-          "isHidden": true
-        },
-        {
-          "bookName": "jonervdx",
-          "subBooks": [],
-          "colors": [],
-          "isHidden": true
-        }
-      ],
-      "colors": [],
-      "isHidden": true
-    },
-    {
-      "bookName": "Yay",
-      "subBooks": [
-        {
-          "bookName": "h",
-          "subBooks": [],
-          "colors": [],
-          "isHidden": true
-        }
-      ],
-      "colors": [
-        {
-          "colorName": "",
-          "colorHex": "#90928f"
-        }
-      ],
       "isHidden": false
     },
     {
-      "bookName": "test",
-      "subBooks": [],
+      "bookName": "Blue tints",
+      "subBooks": [
+        {
+          "bookName": "Blue Shades",
+          "subBooks": [],
+          "colors": [],
+          "isHidden": true
+        }
+      ],
       "colors": [],
-      "isHidden": true
+      "isHidden": false
     }
   ]
 }

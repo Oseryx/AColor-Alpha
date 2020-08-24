@@ -1,7 +1,7 @@
 {
   "name": "color-picker",
   "productName": "color-picker",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "My Electron application description",
   "main": "src/index.js",
   "scripts": {

@@ -69,8 +69,8 @@ function generateBooks(books, bookCopy) {
     let folder = ``;
     for (let i = 0; i < books.length; i++) {
         let subFolders = ``;
+        //console.log(books[i], bookCopy[i]);
         if (books[i][1].length > 0) subFolders = generateBooks(books[i][1], bookCopy[i][1]);
-
         const hide = (bookCopy[i][2] === true) ? `hide-sub-folders` : ``;
         const src = (bookCopy[i][2] === true) ? `../../assets/img/folder-close.svg` : `../../assets/img/folder-open.svg`;
 

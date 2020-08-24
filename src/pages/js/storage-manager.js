@@ -27,9 +27,10 @@ function initStorage(){
 
     const addPrimaryFile = document.createElement('div');
     addPrimaryFile.id = `primary-file-add`;
+    addPrimaryFile.className = `primary-file-add`;
     addPrimaryFile.innerHTML = `
-        <img src="../../assets/img/add-folder.svg" alt="">
-        <a spellcheck="false">Add File</a>
+        <img class="primary-file-add-icon" src="../../assets/img/add-folder.svg" alt="">
+        <a class="primary-file-add-name" spellcheck="false">Add File</a>
     `;
 
     document.getElementById('folders').appendChild(addPrimaryFile);
@@ -183,12 +184,19 @@ document.addEventListener('dragover', (event) => {
 
 document.addEventListener('dragleave', () => {
     isDragging = false;
+    clickCount = 0;
 }, false);
 
+document.addEventListener('dragend', () => {
+    isDragging = false;
+    clickCount = 0;
+});
+
 document.addEventListener('drop', (event) => {
+    if(isMenuOpen) return;
     const target = event.target;
     if(targetMovedColor !== -1){
-        console.log('Color !');
+        //console.log('Color !');
         if(target.classList.contains('folder') || target.classList.contains('name') || target.classList.contains('folder-name-text') || target.classList.contains('folder-name-icon')){
             let parent = -1;
             if(target.classList.contains('folder')) parent = target;
@@ -205,7 +213,6 @@ document.addEventListener('drop', (event) => {
         }
     }
     else {
-        //console.log('folder !');
         if(target.classList.contains('folder') || target.classList.contains('name') || target.classList.contains('folder-name-text') || target.classList.contains('folder-name-icon')){
             let parent = -1;
             if(target.classList.contains('folder')) parent = target;
@@ -214,29 +221,28 @@ document.addEventListener('drop', (event) => {
             else return;
             
             const parentPath = colorPath(parent);
-
-            console.log(checkIsChild(targetMovedFolderPath, parentPath));
-
-            if(checkIsChild(targetMovedFolderPath, parentPath)) return
-            //console.log(target.classList);
-            //console.log(target.parentElement.classList);
-            //console.log(target.parentElement.parentElement.classList);
-
-            //console.log(parentPath);
-            //console.log(targetMovedFolderPath);
-
+            //console.log(targetMovedFolderPath, parentPath);
+            //console.log(checkIsParent(targetMovedFolderPath,parentPath));
+            if(checkIsChild(targetMovedFolderPath, parentPath) || checkIsParent(targetMovedFolderPath, parentPath)) return;
 
             storageManager.moveFolder(targetMovedFolderPath, parentPath);
+            ipcRenderer.send('updateColorPickerStorage');
             initStorage();
-            
-            
-            //storageManager.moveColor(activeFilePath, parentPath, targetMovedColor);
-            //setColors(activeFileIndex);
-            
-            //targetMovedColor = -1;
+        }
+        else if(target.classList.contains('folders') || target.classList.contains('primary-file-add') || target.classList.contains('primary-file-add-icon') || target.classList.contains('primary-file-add-name')) {
+            //console.log('main tree !');
+            if(targetMovedFolderPath.length === 1) return;
+            //console.log(targetMovedFolderPath);
+            storageManager.moveFolder(targetMovedFolderPath, -1);
+            ipcRenderer.send('updateColorPickerStorage');
+            initStorage();
         }
     }
+    isDragging = false;
+    clickCount = 0;
 });
+
+document.addEventListener('drag',() => {isDragging = true;});
 
 document.addEventListener('dragstart', (event) => {
     isDragging = true;
@@ -250,9 +256,19 @@ document.addEventListener('dragstart', (event) => {
 });
 
 function checkIsChild(targetFolderPath, parentPath){
-    if(targetFolderPath.length === parentPath.length +1){
+    if(targetFolderPath.length === parentPath.length + 1 || targetFolderPath.length === parentPath.length){
         for(let i = 0; i < parentPath.length; i++){
             if(targetFolderPath[i] !== parentPath[i]) return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+function checkIsParent(targetFolderPath, childPath){
+    if(targetFolderPath.length + 1 <= childPath.length){
+        for(let i = 0; i < targetFolderPath.length; i++){
+            if(targetFolderPath[i] !== childPath[i]) return false;
         }
         return true;
     }
