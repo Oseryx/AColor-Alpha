@@ -27,10 +27,6 @@
         {
           "colorName": "",
           "colorHex": "#3b3072"
-        },
-        {
-          "colorName": "",
-          "colorHex": "#90928f"
         }
       ],
       "isHidden": true
@@ -64,7 +60,12 @@
           "isHidden": true
         }
       ],
-      "colors": [],
+      "colors": [
+        {
+          "colorName": "",
+          "colorHex": "#90928f"
+        }
+      ],
       "isHidden": false
     },
     {

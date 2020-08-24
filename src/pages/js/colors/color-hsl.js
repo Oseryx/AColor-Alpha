@@ -54,15 +54,6 @@ ipcRenderer.on('toEdit', (event, color) => {
     if(rgba !== undefined && rgba !== null){
         const rgba = hexToRgba(color);
         setInputs(rgba);
-        //document.getElementById('hex').value = color;
-        // document.getElementById('R').value = rgba[0];
-        // document.getElementById('G').value = rgba[1];
-        // document.getElementById('B').value = rgba[2];
-        // document.getElementById('A').value = rgba[3];
-        // document.getElementById('alpha').value = rgba[3] * 100;
-        
-        //document.getElementById('RGBA').value = 'rgba(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] +')';
-        
         document.getElementById('selector').style.setProperty('left', predictRangePos(rgba[0], rgba[1], rgba[2], range.width) - 7.5 + 'px');
         pixel = hiddentContext.getImageData(predictRangePos(rgba[0], rgba[1], rgba[2], range.width) - 7.5, 0, range.width, range.height).data;
         const [x, y] = predictCursorPos(rgba[0], rgba[1], rgba[2], hsvGradient.width, hsvGradient.height);

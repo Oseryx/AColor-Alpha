@@ -2,7 +2,11 @@ const { ipcRenderer } = require('electron');
 const fs = require('fs');
 const remote = require('electron').remote;
 const storageManager = remote.getGlobal('storage');
+let isDragging = false;
 let books = [];
+let activeFilePath = [];
+let targetMovedFolderPath = [];
+let targetMovedColor = -1;
 let clickCount = 0;
 let isMenuOpen = false;
 let isRenaming = false;
@@ -31,7 +35,9 @@ function initStorage(){
     document.getElementById('folders').appendChild(addPrimaryFile);
 
     if(document.getElementsByClassName('name')[0]){
-        setColors(0);
+        activeFilePath = [0];
+        activeFileIndex = 0;
+        setColors(activeFileIndex);
         
         document.getElementById('add-to-color-book').addEventListener('click', () => {
             ipcRenderer.send('toAddToColorBook', activeFileIndex);        
@@ -79,10 +85,10 @@ function generateBooks(books){
         const src = (books[i][2] === true) ? `../../assets/img/folder-close.svg` : `../../assets/img/folder-open.svg`;
 
         folder += `
-        <div class="folder ` + i + `` + hide + `">
+        <div draggable="true" class="folder ` + i + `` + hide + `">
             <div class="name">
-                <img src="` + src + `" alt="">
-                <a spellcheck="false">` + books[i][0] + `</a>
+                <img class="folder-name-icon" src="` + src + `" alt="">
+                <a class="folder-name-text" spellcheck="false">` + books[i][0] + `</a>
             </div>
             <div class="sub-folders">` + subFolders + `</div>
         </div>
@@ -106,7 +112,7 @@ function hierarchyInputs(index){
         clickCount++;
         if(clickCount === 1){
             setTimeout(() => {
-                if(clickCount !== 1) return;
+                if(clickCount !== 1 || isDragging) return;
                 const oldSrc = folder.firstChild.nextSibling.src;
         
                 if(folder.parentElement.classList.contains('folder')){
@@ -125,7 +131,8 @@ function hierarchyInputs(index){
             }, 250);
         }
         else if(clickCount === 2){
-            if(folder.parentElement.classList.contains('empty')) return;
+            if(folder.parentElement.classList.contains('empty') || isDragging) return;
+            activeFilePath = colorPath(folder.parentElement);
             setColors(index);
             clickCount = 0;
         }
@@ -170,6 +177,87 @@ function hierarchyInputs(index){
     });
 }
 
+document.addEventListener('dragover', (event) => {
+    event.preventDefault();
+}, false);
+
+document.addEventListener('dragleave', () => {
+    isDragging = false;
+}, false);
+
+document.addEventListener('drop', (event) => {
+    const target = event.target;
+    if(targetMovedColor !== -1){
+        console.log('Color !');
+        if(target.classList.contains('folder') || target.classList.contains('name') || target.classList.contains('folder-name-text') || target.classList.contains('folder-name-icon')){
+            let parent = -1;
+            if(target.classList.contains('folder')) parent = target;
+            else if(target.parentElement.classList.contains('folder')) parent = target.parentElement;
+            else if(target.parentElement.parentElement.classList.contains('folder')) parent = target.parentElement.parentElement;
+            else return;
+            
+            const parentPath = colorPath(parent);
+            
+            storageManager.moveColor(activeFilePath, parentPath, targetMovedColor);
+            setColors(activeFileIndex);
+            
+            targetMovedColor = -1;
+        }
+    }
+    else {
+        //console.log('folder !');
+        if(target.classList.contains('folder') || target.classList.contains('name') || target.classList.contains('folder-name-text') || target.classList.contains('folder-name-icon')){
+            let parent = -1;
+            if(target.classList.contains('folder')) parent = target;
+            else if(target.parentElement.classList.contains('folder')) parent = target.parentElement;
+            else if(target.parentElement.parentElement.classList.contains('folder')) parent = target.parentElement.parentElement;
+            else return;
+            
+            const parentPath = colorPath(parent);
+
+            console.log(checkIsChild(targetMovedFolderPath, parentPath));
+
+            if(checkIsChild(targetMovedFolderPath, parentPath)) return
+            //console.log(target.classList);
+            //console.log(target.parentElement.classList);
+            //console.log(target.parentElement.parentElement.classList);
+
+            //console.log(parentPath);
+            //console.log(targetMovedFolderPath);
+
+
+            storageManager.moveFolder(targetMovedFolderPath, parentPath);
+            initStorage();
+            
+            
+            //storageManager.moveColor(activeFilePath, parentPath, targetMovedColor);
+            //setColors(activeFileIndex);
+            
+            //targetMovedColor = -1;
+        }
+    }
+});
+
+document.addEventListener('dragstart', (event) => {
+    isDragging = true;
+    const target = event.target;
+    if(target.classList.contains('color')) targetMovedColor = Number(target.classList[1]);
+    else {
+        if(target.classList.contains('folder')) targetMovedFolderPath = colorPath(event.target);
+        else if(event.target.parentElement.classList.contains('folder')) targetMovedFolderPath = colorPath(event.target.parentElement);
+        else if(event.target.parentElement.parentElement.classList.contains('folder')) targetMovedFolderPath = colorPath(event.target.parentElement.parentElement);
+    } 
+});
+
+function checkIsChild(targetFolderPath, parentPath){
+    if(targetFolderPath.length === parentPath.length +1){
+        for(let i = 0; i < parentPath.length; i++){
+            if(targetFolderPath[i] !== parentPath[i]) return false;
+        }
+        return true;
+    }
+    return false;
+}
 
 //Cheked
 function hideMenu(){
@@ -200,8 +288,6 @@ function colorEvents(){
         document.getElementsByClassName('color')[i].addEventListener('click', () => {
             const array = colorPath(document.getElementsByClassName('name')[activeFileIndex].parentElement);
             ipcRenderer.send('enableColorProperty', array, i);
-            //const color = document.getElementsByClassName('color')[i].classList[1];
-            //ipcRenderer.send('enableColorProperty', color);
         });
     }
 }

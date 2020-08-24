@@ -89,6 +89,31 @@ function toggleFileState(path){
     location.isHidden = (location.isHidden) ? false : true;
 }
 
+function moveFolder(folderPath, newPath){
+    let location = storage.storage[folderPath[0]];
+    let folder = storage.storage[folderPath[0]];
+    if(folderPath.length > 1){
+        for(let i = 1; i < folderPath.length - 1; i++){
+            location = location.subBooks[folderPath[i]];
+        }
+        folder = location.subBooks[folderPath[folderPath.length - 1]];
+        location.subBooks.splice(folderPath[folderPath.length - 1], 1);
+    }
+    else{
+        storage.storage.splice(folderPath[0], 1);
+    }
+
+    location = storage.storage[newPath[0]];
+    if(newPath.length > 1){
+        for(let i = 1; i < newPath.length; i++){
+            location = location.subBooks[newPath[i]];
+        }
+    }
+    location.subBooks.push(folder);
+    //console.log(location);
+
+}
+
 function deleteFile(path){
     if(path.length === 1){
         storage.storage.splice(path[0], 1);
@@ -177,6 +202,23 @@ function changeColorName(path, colorIndex, name){
     location.color[colorIndex].colorName = name;
 }
 
+function moveColor(initialPath, newPath, colorIndex){
+    let location = storage.storage[initialPath[0]];
+    for(let i = 1; i < initialPath.length; i++){
+        location = location.subBooks[initialPath[i]];
+    }
+
+    const color = location.colors[colorIndex];
+    location.colors.splice(colorIndex, 1);
+
+    location = storage.storage[newPath[0]];
+    for(let i = 1; i < newPath.length; i++){
+        location = location.subBooks[newPath[i]];
+    }
+
+    location.colors.push(color);
+}
+
 function deleteColor(path, colorIndex){
     let location = storage.storage[path[0]];
     for(let i = 1; i < path.length; i++){
@@ -206,6 +248,7 @@ module.exports = {
     changeFileState,
     toggleFileState,
     toggleCopyState,
+    moveFolder,
     deleteFile,
     getColors,
     getColor,
@@ -213,5 +256,6 @@ module.exports = {
     updateColor,
     changeColorName,
     deleteColor,
-    getBooks
+    getBooks,
+    moveColor
 };
