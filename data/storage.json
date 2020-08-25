@@ -11,9 +11,23 @@
         },
         {
           "bookName": "Pinks",
-          "subBooks": [],
+          "subBooks": [
+            {
+              "bookName": "Blue tints",
+              "subBooks": [
+                {
+                  "bookName": "Blue Shades",
+                  "subBooks": [],
+                  "colors": [],
+                  "isHidden": true
+                }
+              ],
+              "colors": [],
+              "isHidden": false
+            }
+          ],
           "colors": [],
-          "isHidden": true
+          "isHidden": false
         }
       ],
       "colors": [
@@ -40,21 +54,24 @@
         {
           "colorName": "",
           "colorHex": "#3b3072"
-        }
-      ],
-      "isHidden": false
-    },
-    {
-      "bookName": "Blue tints",
-      "subBooks": [
+        },
         {
-          "bookName": "Blue Shades",
-          "subBooks": [],
-          "colors": [],
-          "isHidden": true
+          "colorName": "",
+          "colorHex": "#23903a"
+        },
+        {
+          "colorName": "",
+          "colorHex": "#1a6c2b"
+        },
+        {
+          "colorName": "",
+          "colorHex": "#1a6c2b"
+        },
+        {
+          "colorName": "",
+          "colorHex": "#1c752f"
         }
       ],
-      "colors": [],
       "isHidden": false
     }
   ]

@@ -90,9 +90,24 @@ body{
     height: 50px;
     border-radius: 50%;
     cursor: pointer;
+    background-image: url('../../../assets/img/transparent-background.jpg');
+    background-size: 200%;
+    background-position: center;
+    transition: all 0.6s ease;
+}
+.color-color{
+    margin-left: -2%;
+    margin-top: -2%;
+    width: 104%;
+    height: 104%;
+    border-radius: 50%;
     transition: all 0.6s ease;
 }
 .color:hover{
+    border-radius: 30%;
+    transition: all 0.6s ease;
+}
+.color:hover > .color-color{
     border-radius: 30%;
     transition: all 0.6s ease;
 }

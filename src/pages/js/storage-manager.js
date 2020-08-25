@@ -316,8 +316,10 @@ function setColors(index){
     activeFileIndex = index;
     
     let colorHtml = ``;
-    for(let i = 0; i < colors.length; i++){
-        colorHtml += `<div draggable="true" class="color ` + i + `" style="background-color: ` + colors[i].colorHex + `;"></div>`;
+    for(let i = 0; i < colors.length; i++){ //style="border: 5px ` + colors[i].colorHex + ` solid;"
+        colorHtml += `<div draggable="true" class="color ` + i + `">
+            <div class="color-color" style="background-color: ` + colors[i].colorHex + `;"></div>
+        </div>`;
     }
     colorHtml += `<div class="color-add" id="add-to-color-book"><a>+</a></div>`;
 
