@@ -15,7 +15,7 @@ module.exports = (pat) => {
     let createWindow = () => {
         win = new BrowserWindow({
             frame: false,
-            width: 1000,
+            width: 600,
             height: 400,
             focusable: true,
             resizable: false,
@@ -25,7 +25,7 @@ module.exports = (pat) => {
             }
         });
         win.loadURL(path.join(__dirname, "../pages/colorpicker.html"));
-        win.webContents.openDevTools();
+        //win.webContents.openDevTools();
         win.on('close', () => {
             win = undefined;
         });

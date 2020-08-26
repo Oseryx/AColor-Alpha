@@ -15,7 +15,7 @@ module.exports = () => {
     let createWindow = () => {
         win = new BrowserWindow({
             frame: false,
-            width: 1000,
+            width: 400,
             height: 600,
             focusable: true,
             resizable: false,
@@ -26,7 +26,7 @@ module.exports = () => {
         });
 
         win.loadURL(path.join(__dirname, "../pages/storage.html"));
-        win.webContents.openDevTools();
+        //win.webContents.openDevTools();
         win.on('close', () => {
             win = undefined;
         });
