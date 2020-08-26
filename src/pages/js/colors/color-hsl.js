@@ -120,9 +120,15 @@ hsvGradient.addEventListener('mousedown', (event) => {
     circleX = x;
     circleY = y;
 
-    document.getElementsByTagName('body')[0].style.setProperty('cursor', 'pointer');
-    
-    root.style.setProperty('--chosed-color', 'rgba(' + chosedColor[0] + ',' + chosedColor[1] + ',' + chosedColor[2] + ',' + document.getElementById('alpha').value / 100 + ')');
+    document.getElementsByTagName('body')[0].style.setProperty('cursor', (x === circleX && y === circleY)?'pointer':'default');
+
+    drawSwatch(pixel[0], pixel[1], pixel[2]);
+        
+    a = document.getElementById('alpha').value;
+
+    root.style.setProperty('--chosed-color', 'rgba(' + chosedColor[0] + ',' + chosedColor[1] + ',' + chosedColor[2] + ',' + a / 100 + ')');
+    const rgba = [chosedColor[0], chosedColor[1], chosedColor[2], a / 100];
+    setInputs(rgba);
 });
 
 //Cheked
@@ -165,15 +171,9 @@ document.addEventListener('mousemove', (e) => {
         const x = e.clientX - bounds.left;
 
         hasClickOnColorSelector = true;
-        if (x > range.width) {
-            document.getElementById('selector').style.setProperty('left', range.width - 7.5 + 'px');
-        }
-        else if (x < 0) {
-            document.getElementById('selector').style.setProperty('left', 0 - 7.5 + 'px');
-        }
-        else {
-            document.getElementById('selector').style.setProperty('left', x - 7.5 + 'px');
-        }
+        if (x > range.width) document.getElementById('selector').style.setProperty('left', range.width - 7.5 + 'px');
+        else if (x < 0) document.getElementById('selector').style.setProperty('left', 0 - 7.5 + 'px');
+        else document.getElementById('selector').style.setProperty('left', x - 7.5 + 'px');
 
         pixel = hiddentContext.getImageData(x, 0, range.width, range.height).data;
         
@@ -198,7 +198,9 @@ document.getElementById('range-container').addEventListener('mousedown', (event)
         drawSwatch(pixel[0], pixel[1], pixel[2]);
     
         root.style.setProperty('--chosed-color', 'rgba(' + chosedColor[0] + ',' + chosedColor[1] + ',' + chosedColor[2] + ',' + a / 100 + ')');
-    
+        const rgba = [chosedColor[0], chosedColor[1], chosedColor[2], a / 100];
+        setInputs(rgba);
+        
         document.getElementById('selector').style.setProperty('left', x + 'px');
     }
 });
