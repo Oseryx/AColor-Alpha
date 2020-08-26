@@ -35,7 +35,7 @@ function initStorage(){
 
     document.getElementById('folders').appendChild(addPrimaryFile);
 
-    if(document.getElementsByClassName('name')[0]){
+    if(document.getElementsByClassName('name')[activeFileIndex]){
         activeFilePath = [0];
         activeFileIndex = 0;
         setColors(activeFileIndex);
@@ -407,7 +407,7 @@ document.getElementById('new-file-name').addEventListener('keydown', (event) => 
         popup.classList.toggle('hide-file-name');
 
         if(fileName == '') return;
-
+        
         const path = (targetIndex === -1) ? [] : colorPath(document.getElementsByClassName('name')[targetIndex].parentElement);
         storageManager.addFile(path, fileName);
         ipcRenderer.send('updateColorPickerStorage');

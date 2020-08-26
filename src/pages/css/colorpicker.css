@@ -156,7 +156,7 @@ body {
   outline: none;
   margin-top: 4px;
   height: 25px;
-  width: 180px;
+  width: 150px;
   font-weight: bold;
   border-radius: 7px;
   color: #a7a7a7;
@@ -164,6 +164,31 @@ body {
   border: none;
   text-align: center;
   background-color: #0f0f0f7e;
+}
+.input .img{
+  width: 25px;
+  height: 25px;
+  margin-top: 4px;
+  margin-left: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #040404b0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.input .img img{
+  margin-top: -3.5px;
+  min-width: 20px;
+  max-width: 20px;
+  min-height: 20px;
+  max-height: 20px;
+  filter: invert(100%) sepia(1%) saturate(7495%) hue-rotate(226deg) brightness(119%) contrast(100%);
+}
+.input{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .color-option-name{
   margin-top: 5px;

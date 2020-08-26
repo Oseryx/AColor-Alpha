@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron');
+const clipbaord = require('copy-text-to-clipboard');
 const range = document.getElementById('range');
 const hiddentContext = range.getContext('2d');
 const gradient = hiddentContext.createLinearGradient(0, 0, range.width, 0);
@@ -355,4 +356,13 @@ function predict(rgba){
     drawSwatch(rgba[0], rgba[1], rgba[2]);
 
     refreshActiveColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+}
+
+for(let i = 0; i < document.getElementsByClassName('clipboard').length; i++){
+    document.getElementsByClassName('clipboard')[i].addEventListener('click', () => {
+        if(i === 0) clipbaord(document.getElementById('hex').value);
+        else if(i === 1) clipbaord(document.getElementById('rgb').value);
+        else if(i === 2) clipbaord(document.getElementById('hsl').value);
+        else if(i === 3) clipbaord(document.getElementById('hsv').value);
+    });
 }
