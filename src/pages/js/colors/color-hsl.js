@@ -359,10 +359,16 @@ function predict(rgba){
 }
 
 for(let i = 0; i < document.getElementsByClassName('clipboard').length; i++){
-    document.getElementsByClassName('clipboard')[i].addEventListener('click', () => {
+    const clip = document.getElementsByClassName('clipboard')[i];
+    clip.addEventListener('click', () => {
         if(i === 0) clipbaord(document.getElementById('hex').value);
         else if(i === 1) clipbaord(document.getElementById('rgb').value);
         else if(i === 2) clipbaord(document.getElementById('hsl').value);
         else if(i === 3) clipbaord(document.getElementById('hsv').value);
+
+        clip.classList.toggle('copied');
+        setTimeout(() => {
+            clip.classList.toggle('copied');
+        }, 1000);
     });
 }

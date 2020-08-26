@@ -65,10 +65,17 @@ option{
     display: flex;
     align-items: center;
     cursor: pointer;
+    transition: all 0.5s ease;
 }
 #color-value{
     margin-left: 5px;
     font-size: 12px;
+}
+
+.clipboard{
+    color: #ffffff;
+    background-color: #289d5d;
+    transition: all 0.5s ease;
 }
 .edit{
     width: 20vw;

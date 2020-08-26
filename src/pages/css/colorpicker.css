@@ -176,9 +176,15 @@ body {
   background-color: #040404b0;
   border-radius: 5px;
   cursor: pointer;
+  transition: all 0.5s ease;
+}
+.input .copied{
+  background-color: #289d5d;
+  transition: all 0.5s ease;
 }
 .input .img img{
   margin-top: -3.5px;
+  margin-left: -1px;
   min-width: 20px;
   max-width: 20px;
   min-height: 20px;

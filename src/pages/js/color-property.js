@@ -137,9 +137,14 @@ document.getElementById('cancel-replace-gradient').addEventListener('click', () 
 });
 
 //Copy to clipboard
-document.getElementById('color-value-container').addEventListener('click', () => {
+const colorContainer = document.getElementById('color-value-container');
+colorContainer.addEventListener('click', () => {
     const colorInfo = document.getElementById('color-value').innerHTML;
     clipboard(colorInfo);
+    colorContainer.classList.toggle('clipboard');
+    setTimeout(() => {
+        colorContainer.classList.toggle('clipboard');
+    }, 1000);
 });
 
 ipcRenderer.on('targetColor', (event, file, color) => {
