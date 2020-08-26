@@ -58,7 +58,7 @@ function generateHierarchy(){
     const folder = generateBooks(storage.getBooks(storage.storage.storage, lodash.cloneDeep(selectedFolderPath)), storage.getBooks(storage.storageCopy.storage)) + `
     <div class="add-folder" id="add-folder">
         <img class="add-folder-img" src="../../assets/img/add-folder.svg" alt="">
-        <a spellcheck="false">Add File</a>
+        <a spellcheck="false">Add Folder</a>
     </div>
     `;
     document.getElementById('folders').innerHTML = folder;
@@ -85,7 +85,7 @@ function generateBooks(books, bookCopy) {
                 ` 
                 <div class="add-folder">
                     <img class="add-folder-img" src="../../assets/img/add-folder.svg" alt="">
-                    <a spellcheck="false">Add File</a>
+                    <a spellcheck="false">Add Folder</a>
                 </div>
             </div>
         </div>
