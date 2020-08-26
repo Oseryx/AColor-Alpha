@@ -43,10 +43,11 @@ document.getElementById('replace-by-picked').addEventListener('click', () => {
     document.getElementById('color-pick').classList.toggle('hide-pick-popup');
     document.getElementById('preview').style.setProperty('background', pickedColor);
     
+    setValues(pickedColor);
+    
     const convertedColor = hexToRgba(pickedColor);
     generateVariants(convertedColor);
 
-    setValues(pickedColor);
     storage.updateColor(folder, colorIndex, pickedColor);
     ipcRenderer.send('refreshCurrentFile');
     //replaceColor(pickedColor);
@@ -55,7 +56,13 @@ document.getElementById('replace-by-picked').addEventListener('click', () => {
 document.getElementById('add-color').addEventListener('click', () => {
     document.getElementById('color-pick').classList.toggle('hide-pick-popup');
     document.getElementById('color-popup').classList.toggle('hide-new-color-popup');
-    
+
+    mainColor = storage.getColor(folder, colorIndex).color.colorHex;
+
+    const convertedColor = hexToRgba(mainColor);
+    generateVariants(convertedColor);
+
+    setValues(mainColor);
 });
 
 document.getElementById('cancel-pick').addEventListener('click', () => {
@@ -204,11 +211,15 @@ function generateVariants(color){
 
     let gradients = ``;
     for(let i = tints.length - 1; i >= 0; i--){
-        gradients += `<div class="variant" style="background: rgb(` + tints[i][0] + `,` + tints[i][1] + `,` + tints[i][2] +`)"></div>`;
+        gradients += `<div class="variant-background">
+            <div class="variant" style="background: rgba(` + tints[i][0] + `,` + tints[i][1] + `,` + tints[i][2] + ',' + color[3] +`)"></div>
+        </div>`;
     }
 
     for(let i = 0; i < shades.length; i++){
-        gradients += `<div class="variant" style="background: rgb(` + shades[i][0] + `,` + shades[i][1] + `,` + shades[i][2] +`)"></div>`;
+        gradients += `<div class="variant-background">
+            <div class="variant" style="background: rgba(` + shades[i][0] + `,` + shades[i][1] + `,` + shades[i][2] + ',' + color[3] +`)"></div>
+        </div>`;
     }
 
     gradient.innerHTML = gradients;

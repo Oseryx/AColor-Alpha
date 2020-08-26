@@ -26,6 +26,13 @@ body{
     font-size: 14px;
     color: #a7a7a7;
 }
+.preview-background{
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    background-image: url('../../../assets/img/transparent-background.jpg');
+    background-size: 600%;
+}
 #preview{
     width: 40px;
     height: 40px;
@@ -117,12 +124,20 @@ option{
     justify-content: center;
     flex-wrap: wrap;
 }
-.variant-box div{
+.variant-box .variant-background{
     width: 30px;
     height: 30px;
     border-radius: 1px;
     margin-left: 2px;
     margin-top: 2px;
+    cursor: pointer;
+    background-image: url('../../../assets/img/transparent-background.jpg');
+    background-size: 600%;
+}
+.variant-background div{
+    width: 30px;
+    height: 30px;
+    border-radius: 1px;
     cursor: pointer;
 }
 #menu{

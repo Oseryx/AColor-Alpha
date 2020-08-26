@@ -67,7 +67,7 @@ ipcRenderer.on('toEdit', (event, color) => {
     isEditingColor = true;
     
     document.getElementById('update-color').addEventListener('click', () => {
-        if(isEditingColor) ipcRenderer.send('new-color', '#' + rgbaToHex(chosedColor[0], chosedColor[1], chosedColor[2]));
+        if(isEditingColor) ipcRenderer.send('new-color', '#' + rgbaToHex(chosedColor[0], chosedColor[1], chosedColor[2], document.getElementById('alpha').value / 100));
         isEditingColor = false;
         document.getElementById('actions').innerHTML = `
         <div id="save-color-action" class="save-color">
@@ -198,7 +198,7 @@ document.getElementById('range-container').addEventListener('mousedown', (event)
         drawSwatch(pixel[0], pixel[1], pixel[2]);
     
         root.style.setProperty('--chosed-color', 'rgba(' + chosedColor[0] + ',' + chosedColor[1] + ',' + chosedColor[2] + ',' + a / 100 + ')');
-        const rgba = [chosedColor[0], chosedColor[1], chosedColor[2], a / 100];
+        const rgba = [chosedColor[0], chosedColor[1], chosedColor[2], document.getElementById('alpha').value / 100];
         setInputs(rgba);
         
         document.getElementById('selector').style.setProperty('left', x + 'px');
@@ -226,6 +226,7 @@ document.getElementById('alpha').addEventListener('input', () => {
     const rgba = [chosedColor[0], chosedColor[1], chosedColor[2], Number(document.getElementById('alpha').value / 100)];
     setInputs(rgba, 'alpha');
     refreshActiveColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+    editColor();
 });
 
 //Cheked
@@ -286,7 +287,7 @@ function refreshActiveColor(r, g, b, a){
 }
 
 function editColor() {
-    if(isEditingColor) ipcRenderer.send('update-color', '#' + rgbaToHex(chosedColor[0], chosedColor[1], chosedColor[2]));
+    if(isEditingColor) ipcRenderer.send('update-color', '#' + rgbaToHex(chosedColor[0], chosedColor[1], chosedColor[2], document.getElementById('alpha').value / 100));
 }
 
 function setInputs(rgba, except){
