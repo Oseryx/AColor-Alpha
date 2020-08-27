@@ -14,7 +14,7 @@ let init = () => {
 let createWindow = () => {
     win = new BrowserWindow({
         frame: false,
-        width: 700,
+        width: 300,
         height: 300,
         focusable: true,
         resizable: false,
@@ -25,7 +25,7 @@ let createWindow = () => {
     });
 
     win.loadURL(path.join(__dirname, "../pages/color-property.html"));
-    win.webContents.openDevTools();
+    //win.webContents.openDevTools();
 
     win.on('close', () => {
         win = undefined;
