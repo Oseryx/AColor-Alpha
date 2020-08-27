@@ -366,11 +366,13 @@ document.addEventListener('mousedown', (event) => {
     const dropdownColor = document.getElementById('color-mouse-dropdown')
     const popup = document.getElementById('popup');
     const deleteFile = document.getElementById('delete-file-popup');
+    const colorDelete = document.getElementById('delete-color-popup');
 
     if(event.target == dropdownFolder     || dropdownFolder.contains(event.target)
         || event.target === dropdownColor || dropdownColor.contains(event.target) 
         || event.target == popup          || popup.contains(event.target)
-        || event.target == deleteFile     || deleteFile.contains(event.target)) return;
+        || event.target == deleteFile     || deleteFile.contains(event.target)
+        || event.target == colorDelete    || colorDelete.contains(event.target)) return;
     
     if(isMenuOpen) hideMenu();
 
@@ -383,6 +385,7 @@ document.addEventListener('mousedown', (event) => {
 
     if(!popup.classList.contains('hide-file-name')) popup.classList.toggle('hide-file-name');
     if(!deleteFile.classList.contains('hide-popup-delete')) deleteFile.classList.toggle('hide-popup-delete');
+    if(!colorDelete.classList.contains('hide-popup-delete')) colorDelete.classList.toggle('hide-popup-delete');
 });
 
 //Cheked
@@ -402,6 +405,7 @@ document.getElementById('new-file-name').addEventListener('keydown', (event) => 
         else popup.classList.toggle('hide-file-name');
     }
     else if(event.keyCode == 13){
+        if(popup.classList.contains('hide-file-name')) return;
         const fileName = document.getElementById('new-file-name').value;
         
         popup.classList.toggle('hide-file-name');
@@ -427,17 +431,26 @@ document.getElementById('rename-file').addEventListener('click', () => {
 //Cheked
 document.getElementById('body').addEventListener('keydown', (event) => {
     const popup = document.getElementById('delete-file-popup');
+    const colorDelete = document.getElementById('delete-color-popup');
     event = event || window.event;
     if(event.keyCode == 27){
         if(!popup.classList.contains('hide-popup-delete')) popup.classList.toggle('hide-popup-delete');
+        if(!colorDelete.classList.contains('hide-popup-delete')) colorDelete.classList.toggle('hide-popup-delete');
     }
     else if(event.keyCode == 13){
-        if(popup.classList.contains('hide-popup-delete')) return;
-        const path = colorPath(document.getElementsByClassName('name')[targetIndex].parentElement);
-        storageManager.deleteFile(path);
-        ipcRenderer.send('updateColorPickerStorage');
-        initStorage();
-        popup.classList.toggle('hide-popup-delete');
+        if(!popup.classList.contains('hide-popup-delete')){
+            popup.classList.toggle('hide-popup-delete');
+            const path = colorPath(document.getElementsByClassName('name')[targetIndex].parentElement);
+            storageManager.deleteFile(path);
+            ipcRenderer.send('updateColorPickerStorage');
+            initStorage();
+        }
+        if(!colorDelete.classList.contains('hide-popup-delete')){
+            colorDelete.classList.toggle('hide-popup-delete');
+            const path = colorPath(document.getElementsByClassName('name')[activeFileIndex].parentElement);
+            storageManager.deleteColor(path, targetColor);
+            setColors(activeFileIndex);
+        }
     }
 });
 

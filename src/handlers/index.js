@@ -2,8 +2,8 @@
 
 require('robotjs');
 module.exports = () => ({
-    colorPicker: require("./colorpicker")(),
-    picker: require("./picker")(),
-    storage: require('./storage')(),
-    colorProperty: require('./color-property')()
+    colorPicker: require("./colorpicker"),
+    picker: require("./picker"),
+    storage: require('./storage'),
+    colorProperty: require('./color-property')
 });
