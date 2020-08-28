@@ -90,6 +90,27 @@ function toggleFileState(path){
     location.isHidden = (location.isHidden) ? false : true;
 }
 
+function areInSameFolder(folderPath, newPath){
+    if(folderPath.length === newPath.length){
+        if(folderPath[folderPath.length-1] > newPath[newPath.length-1]) return false;
+        for(let i = 0; i < folderPath.length-1; i++){
+            if(folderPath[i] !== newPath[i]) return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+function haveTheSameOrigin(folderPath, newPath){
+    if(folderPath.length < newPath.length){
+        for(let i = 0; i < folderPath.length-1; i++){
+            if(folderPath[i] !== newPath[i]) return false;
+        }
+        return true;
+    }
+    return false;
+}
+
 function moveFolder(folderPath, newPath){
     let location = storage.storage[folderPath[0]];
     let folder = storage.storage[folderPath[0]];
@@ -104,6 +125,19 @@ function moveFolder(folderPath, newPath){
         storage.storage.splice(folderPath[0], 1);
     }
 
+    if(areInSameFolder(folderPath, newPath)){
+        newPath[newPath.length-1] -= 1;
+        console.log(1);
+    } 
+    else if(folderPath[0] < newPath[0] && newPath.length > 1 && folderPath.length === 1){
+        newPath[0] -= 1;
+        console.log(2);
+    } 
+    else if(haveTheSameOrigin(folderPath, newPath) && folderPath.length > 1){
+        newPath[folderPath.length - 1] -= 1;
+        console.log(3);
+    } 
+    
     if(newPath === -1){
         storage.storage.push(folder);
         moveCopy(folderPath, newPath);
