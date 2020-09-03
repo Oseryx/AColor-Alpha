@@ -103,6 +103,7 @@ function areInSameFolder(folderPath, newPath){
 
 function haveTheSameOrigin(folderPath, newPath){
     if(folderPath.length < newPath.length){
+        if(folderPath[folderPath.length - 1] > newPath[folderPath.length - 1]) return false;
         for(let i = 0; i < folderPath.length-1; i++){
             if(folderPath[i] !== newPath[i]) return false;
         }
@@ -119,38 +120,35 @@ function moveFolder(folderPath, newPath){
             location = location.subBooks[folderPath[i]];
         }
         folder = location.subBooks[folderPath[folderPath.length - 1]];
-        location.subBooks.splice(folderPath[folderPath.length - 1], 1);
+        //location.subBooks.splice(folderPath[folderPath.length - 1], 1);
     }
     else{
-        storage.storage.splice(folderPath[0], 1);
+        //storage.storage.splice(folderPath[0], 1);
     }
 
-    if(areInSameFolder(folderPath, newPath)){
-        newPath[newPath.length-1] -= 1;
-        console.log(1);
-    } 
-    else if(folderPath[0] < newPath[0] && newPath.length > 1 && folderPath.length === 1){
-        newPath[0] -= 1;
-        console.log(2);
-    } 
-    else if(haveTheSameOrigin(folderPath, newPath) && folderPath.length > 1){
-        newPath[folderPath.length - 1] -= 1;
-        console.log(3);
-    } 
+    //if(areInSameFolder(folderPath, newPath)) newPath[newPath.length-1] -= 1;
+    //else if(folderPath[0] < newPath[0] && newPath.length > 1 && folderPath.length === 1) newPath[0] -= 1;
+    //else if(haveTheSameOrigin(folderPath, newPath) && folderPath.length > 1) newPath[folderPath.length - 1] -= 1;
     
     if(newPath === -1){
         storage.storage.push(folder);
+        if(folderPath.length > 1) location.subBooks.splice(folderPath[folderPath.length - 1], 1);
+        else storage.storage.splice(folderPath[0], 1);
+        
         moveCopy(folderPath, newPath);
+
         return;
     }
 
-    location = storage.storage[newPath[0]];
+    let oldLocation = storage.storage[newPath[0]];
     if(newPath.length > 1){
         for(let i = 1; i < newPath.length; i++){
-            location = location.subBooks[newPath[i]];
+            oldLocation = oldLocation.subBooks[newPath[i]];
         }
     }
-    location.subBooks.push(folder);
+    oldLocation.subBooks.push(folder);
+    if(folderPath.length > 1) location.subBooks.splice(folderPath[folderPath.length - 1], 1);
+    else storage.storage.splice(folderPath[0], 1);
     moveCopy(folderPath, newPath);
 }
 
@@ -162,24 +160,29 @@ function moveCopy(folderPath, newPath){
             location = location.subBooks[folderPath[i]];
         }
         folder = location.subBooks[folderPath[folderPath.length - 1]];
-        location.subBooks.splice(folderPath[folderPath.length - 1], 1);
+        //location.subBooks.splice(folderPath[folderPath.length - 1], 1);
     }
     else{
-        storageCopy.storage.splice(folderPath[0], 1);
+        //storageCopy.storage.splice(folderPath[0], 1);
     }
 
     if(newPath === -1){
         storageCopy.storage.push(folder);
+        if(folderPath.length > 1) location.subBooks.splice(folderPath[folderPath.length - 1], 1);
+        else storageCopy.storage.splice(folderPath[0], 1);
+
         return;
     }
 
-    location = storageCopy.storage[newPath[0]];
+    let newLocation = storageCopy.storage[newPath[0]];
     if(newPath.length > 1){
         for(let i = 1; i < newPath.length; i++){
-            location = location.subBooks[newPath[i]];
+            newLocation = newLocation.subBooks[newPath[i]];
         }
     }
-    location.subBooks.push(folder);
+    newLocation.subBooks.push(folder);
+    if(folderPath.length > 1) location.subBooks.splice(folderPath[folderPath.length - 1], 1);
+    else storageCopy.storage.splice(folderPath[0], 1);
 }
 
 function deleteFile(path){

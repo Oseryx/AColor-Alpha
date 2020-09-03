@@ -235,7 +235,7 @@ document.getElementById('hex').addEventListener('input', () => {
     const rgba = hexToRgba(hex);
     if(rgba !== undefined && rgba !== null){
         setInputs(rgba, 'hex');
-        predict();
+        predict(rgba);
     }
 });
 
