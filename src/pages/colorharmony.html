@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Harmony</title>
+    <link rel="stylesheet" href="css/tilebar.css">
+    <link rel="stylesheet" href="css/color-harmony.css">
+    <script type="module" src="js/color-harmony.js"></script>
+    <script type="module" src="js/manager/color-harmony-option-manager.js"></script>
+    <script type="module" src="js/colors/image-extractor.js"></script>
+</head>
+<body>
+    <div class="menu">
+        <div class="options">
+          <a>Color Harmony</a>
+        </div>
+        <div class="window-buttons">
+            <div class="minimize" id="minimize">
+                <img src="../../assets/img/window-minimize-solid.svg" alt="">
+              </div>
+              <div class="pin-window" id="pin">
+                <img src="../../assets/img/thumbtack-solid.svg" alt="">
+              </div>
+              <div class="close" id="close">
+                <img src="../../assets/img/times-solid.svg" alt="">
+              </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="select-options">
+            <div class="select-option-button" id="color-wheel-button">
+                <a>Color Wheel</a>
+            </div>
+            <div class="select-option-button" id="extractor-image-button">
+                <a>Image Extractor</a>
+            </div>
+        </div>
+        <div class="main-content" id="mainBox">
+            <div class="main-content-box">
+                <canvas id="colorwheel" width="200px" height="200px"></canvas>
+            </div>
+            <div class="main-content-box image-extractor-box">
+                <div class="traitement" id="image-box">
+                    <div class="drag-drop-image" id="dropbox">
+                        <a class="drag-drop-text">Drag and drop an image</a>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content-box histograms-box">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

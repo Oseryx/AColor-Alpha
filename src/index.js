@@ -2,7 +2,7 @@ const { app, BrowserWindow, Menu, Tray, globalShortcut, ipcMain } = require('ele
 const path = require('path');
 const colorpicker = require('./handlers/colorpicker');
 const handlers = require("./handlers")(__dirname);
-const { colorPicker, picker, storage, colorProperty } = handlers;
+const { colorPicker, picker, storage, colorProperty, colorHarmony } = handlers;
 const storageManager = require('./components/storage');
 global.storage = storageManager;
 
@@ -71,6 +71,10 @@ function registerShortcuts() {
     colorPicker.init();
   });
   globalShortcut.register('CommandOrControl+Shift+P', () => {
+    if(!colorPicker.getWindow()){
+      colorPicker.init();
+      colorPicker.getWindow().hide();
+    }
     colorPicker.getWindow().webContents.send('enablePicker');
   });
   globalShortcut.register('CommandOrControl+Shift+Q', () => {

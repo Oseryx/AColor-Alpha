@@ -5,5 +5,6 @@ module.exports = () => ({
     colorPicker: require("./colorpicker"),
     picker: require("./picker"),
     storage: require('./storage'),
-    colorProperty: require('./color-property')
+    colorProperty: require('./color-property'),
+    colorHarmony: require('./color-harmony')
 });

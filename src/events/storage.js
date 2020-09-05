@@ -1,6 +1,6 @@
 "use strict";
 
-const { ipcMain, ipcRenderer } = require('electron');
+const { ipcMain } = require('electron');
 
 module.exports = (handlers) => {
     const { colorPicker, picker, storage, colorProperty } = handlers;

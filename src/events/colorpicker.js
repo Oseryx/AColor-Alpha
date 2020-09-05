@@ -3,10 +3,14 @@
 const { ipcMain } = require('electron');
 
 module.exports = (handlers) => {
-    const { colorPicker, picker, storage, colorProperty} = handlers;
+    const { colorPicker, picker, storage, colorProperty, colorHarmony} = handlers;
 
     ipcMain.on('enableStorage', () => {
         storage.init();
+    });
+
+    ipcMain.on('enableHarmony', () => {
+        colorHarmony.init();
     });
 
     ipcMain.on('minimizeColorPicker', () => {
