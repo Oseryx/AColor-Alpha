@@ -1,33 +1,33 @@
 {
   "storage": [
     {
-      "bookName": "Pastel",
+      "bookName": "Pinks",
       "subBooks": [
         {
-          "bookName": "Blue",
-          "subBooks": [],
-          "colors": [],
-          "isHidden": false
-        },
-        {
-          "bookName": "Pinks",
+          "bookName": "Blue tints",
           "subBooks": [
             {
-              "bookName": "Blue tints",
-              "subBooks": [
-                {
-                  "bookName": "Blue Shades",
-                  "subBooks": [],
-                  "colors": [],
-                  "isHidden": true
-                }
-              ],
+              "bookName": "Blue",
+              "subBooks": [],
               "colors": [],
-              "isHidden": false
+              "isHidden": true
             }
           ],
           "colors": [],
           "isHidden": false
+        }
+      ],
+      "colors": [],
+      "isHidden": false
+    },
+    {
+      "bookName": "Pastel",
+      "subBooks": [
+        {
+          "bookName": "Blue Shades",
+          "subBooks": [],
+          "colors": [],
+          "isHidden": true
         }
       ],
       "colors": [
@@ -74,5 +74,8 @@
       ],
       "isHidden": false
     }
-  ]
+  ],
+  "config": {
+    "lastFolder": 0
+  }
 }

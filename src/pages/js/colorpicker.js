@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('eyedropper').addEventListener('click', () => {
         ipcRenderer.send('enablePicker', true);
     }, false);
+    document.getElementById('harmony').addEventListener('click', () => {
+        ipcRenderer.send('enableHarmony');
+    }, false);
     document.getElementById('storage').addEventListener('click', () => {
         ipcRenderer.send('enableStorage');
     }, false);

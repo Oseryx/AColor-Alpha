@@ -84,7 +84,7 @@ function hexToRgba(hex){
     return [r, g, b, a];
 }
 
-//Cheked
+//Cheked: To delete
 function stringToRgba(color){
     const numComma = color.split(',').length - 1;
     let colorConverted = [];
@@ -452,4 +452,20 @@ function calculateGradients(r, g, b){
 
 function calculateBrightness(r, g, b){
     return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+}
+
+/*Color Wheel math functions*/
+
+function xyToPolar(x, y){
+    let distance = Math.sqrt(x * x + y * y);
+    let phi = Math.atan2(y, x);
+
+    return{
+        distance,
+        phi
+    }
+}
+
+function radToDeg(rad) {
+    return ((rad + Math.PI) / (2 * Math.PI)) * 360;
 }
