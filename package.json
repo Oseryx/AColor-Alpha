@@ -1,7 +1,7 @@
 {
   "name": "color-picker",
   "productName": "color-picker",
-  "version": "0.3.9",
+  "version": "0.4.0",
   "description": "My Electron application description",
   "main": "src/index.js",
   "scripts": {
@@ -54,6 +54,7 @@
     "lodash": "^4.17.19",
     "quantize": "^1.0.2",
     "robotjs": "git+https://github.com/Toinane/robotjs.git",
+    "sortablejs": "^1.10.2",
     "update-electron-app": "^1.5.0",
     "win-mouse": "^1.3.0"
   },
