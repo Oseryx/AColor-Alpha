@@ -1,5 +1,87 @@
 const { property } = require("lodash");
 
+function rgbToXyz(r, g, b){
+    r = r / 255;
+    g = g / 255;
+    b = b / 255;
+
+    if (r > 0.04045) r = Math.pow((r + 0.055) / 1.055, 2.4);
+    else r = r / 12.92;
+    if (g > 0.04045) g = Math.pow((g + 0.055) / 1.055, 2.4);
+    else g = g / 12.92;
+    if (b > 0.04045) b = Math.pow((b + 0.055) / 1.055, 2.4);
+    else b = b / 12.92;
+
+    r = r * 100;
+    g = g * 100;
+    b = b * 100;
+
+    const x = r * 0.4124 + g * 0.3576 + b * 0.1805;
+    const y = r * 0.2126 + g * 0.7152 + b * 0.0722;
+    const z = r * 0.0193 + g * 0.1192 + b * 0.9505;
+
+    return [x.toFixed(4), y.toFixed(4), z.toFixed(4)];
+}
+
+function xyzToRgb(x, y, z){
+    x = x / 100;
+    y = y / 100;
+    z = z / 100;
+
+    
+    let r = (x * 3.240969941904521) + (y * -1.537383177570093) + (z * -0.498610760293);
+	let g = (x * -0.96924363628087) + (y * 1.87596750150772) + (z * 0.041555057407175);
+	let b = (x * 0.055630079696993) + (y * -0.20397695888897) + (z * 1.056971514242878);
+
+    if (r > 0.0031308) r = (1.055 * Math.pow(r, (1 / 2.4)))- 0.055;
+    else r = 12.92 * r;
+    if (g > 0.0031308) g = (1.055 * Math.pow(g, (1 / 2.4))) - 0.055;
+    else g = 12.92 * g;
+    if (b > 0.0031308) b = (1.055 * Math.pow(b, (1 / 2.4))) - 0.055;
+    else b = 12.92 * b;
+
+    r = r * 255;
+    g = g * 255;
+    b = b * 255;
+
+    return [r.toFixed(0), g.toFixed(0), b.toFixed(0), 1];
+}
+
+function rgbToCmyk(r, g, b){
+    r = r / 255;
+    g = g / 255;
+    b = b / 255;
+
+    let k = Math.min(1 - r, 1 - g, 1 - b);
+    let c = (1 - r - k) / (1 - k);
+    let m = (1 - g - k) / (1 - k);
+    let y = (1 - b - k) / (1 - k);
+    
+    c = (isNaN(c)) ? 0 : Math.round(c * 100);
+    m = (isNaN(m)) ? 0 : Math.round(m * 100);
+    y = (isNaN(y)) ? 0 : Math.round(y * 100);
+    k = (isNaN(k)) ? 0 : Math.round(k * 100);
+
+    return [c, m, y, k];
+}
+
+function cmykToRgb(c, m, y, k){
+    c = c / 100;
+    m = m / 100;
+    y = y / 100;
+    k = k / 100;
+
+    let r = 1 - Math.min(1, c * (1 - k) + k);
+    let g = 1 - Math.min(1, m * (1 - k) + k);
+    let b = 1 - Math.min(1, y * (1 - k) + k);
+
+    r = Math.round(r * 255);
+    g = Math.round(g * 255);
+    b = Math.round(b * 255);
+
+    return [r, g, b, 1];
+}
+
 function rgbToHsl(r, g, b, alpha) {
     let hsl = {};
     r /= 255, g /= 255, b /= 255;
@@ -202,76 +284,30 @@ function rgbToHsv(r, g, b, alpha) {
     return [h, s, v, alpha];
 }
 
-function hsvToRgb(h, s, v, alpha) {
-    let r, g, b;
-    let i;
-    let f, p, q, t;
-     
-    // Make sure our arguments stay in-range
-    h = Math.max(0, Math.min(360, h));
-    s = Math.max(0, Math.min(100, s));
-    v = Math.max(0, Math.min(100, v));
-     
-    // We accept saturation and value arguments from 0 to 100 because that's
-    // how Photoshop represents those values. Internally, however, the
-    // saturation and value are calculated from a range of 0 to 1. We make
-    // That conversion here.
-    s /= 100;
-    v /= 100;
-     
-    if(s == 0) {
-        // Achromatic (grey)
-        r = g = b = v;
-        return [
-            Math.round(r * 255), 
-            Math.round(g * 255), 
-            Math.round(b * 255)
-        ];
+function hsvToRgb(hue, saturation, value, alpha) {
+    saturation /= 100;
+    value /= 100;
+    let chroma = value * saturation;
+    hue /= 60;
+    let x = chroma * (1- Math.abs((hue % 2) - 1));
+    let r1, g1, b1;
+
+    if (hue >= 0 && hue <= 1) {
+      ([r1, g1, b1] = [chroma, x, 0]);
+    } else if (hue >= 1 && hue <= 2) {
+      ([r1, g1, b1] = [x, chroma, 0]);
+    } else if (hue >= 2 && hue <= 3) {
+      ([r1, g1, b1] = [0, chroma, x]);
+    } else if (hue >= 3 && hue <= 4) {
+      ([r1, g1, b1] = [0, x, chroma]);
+    } else if (hue >= 4 && hue <= 5) {
+      ([r1, g1, b1] = [x, 0, chroma]);
+    } else if (hue >= 5 && hue <= 6) {
+      ([r1, g1, b1] = [chroma, 0, x]);
     }
-     
-    h /= 60; // sector 0 to 5
-    i = Math.floor(h);
-    f = h - i; // factorial part of h
-    p = v * (1 - s);
-    q = v * (1 - s * f);
-    t = v * (1 - s * (1 - f));
-     
-    switch(i) {
-        case 0:
-            r = v;
-            g = t;
-            b = p;
-            break;
-     
-        case 1:
-            r = q;
-            g = v;
-            b = p;
-            break;
-     
-        case 2:
-            r = p;
-            g = v;
-            b = t;
-            break;
-     
-        case 3:
-            r = p;
-            g = q;
-            b = v;
-            break;
-     
-        case 4:
-            r = t;
-            g = p;
-            b = v;
-            break;
-     
-        default: // case 5:
-            r = v;
-            g = p;
-            b = q;
-    }
+    
+    let m = value - chroma;
+    let [r,g,b] = [r1+m, g1+m, b1+m];
      
     return [
         Math.round(r * 255), 
@@ -374,21 +410,24 @@ function filterInput(value, type){
         if(element != '' && element != '.') numbers.push(Number(element));
     }
 
-    numbers = checkNumbers(numbers.slice(0, 4));
+    numbers = checkNumbers(numbers.slice(0, 4), type);
     numbers = validateInputs(numbers, type);
     
     return numbers;
 }
 
-function checkNumbers(properties){
+function checkNumbers(properties, type){
     for(let i = 0; i < 3; i++){
-        if(!properties[i]) properties.push(255);
+        if(!properties[i]) properties.push(0);
         else properties[i] = Number(properties[i].toFixed(0));
     }
 
-    if(!properties[3] && properties[3] !== 0) properties.push(1);
-    else if (properties[3] > 1 || properties[3] < 0) properties[3] = 1;
-    else properties[3] = Number(properties[3].toFixed(2));    
+    if(type !== 'cmyk'){
+        if(!properties[3] && properties[3] !== 0) properties.push(1);
+        else if (properties[3] > 1 || properties[3] < 0) properties[3] = 1;
+        else properties[3] = Number(properties[3].toFixed(2));    
+    }
+    else if(!properties[3]) properties.push(0);
 
     return properties;
 }
@@ -404,6 +443,18 @@ function validateInputs(properties, type){
         if(properties[0] > 360 || properties[0] < 0) properties[0] = 0;
         for(let i = 1; i < 3; i++){
             if(properties[i] > 100 || properties[i] < 0) properties[i] = 0;
+        }
+        return properties;
+    }
+    else if(type === 'cmyk'){
+        for(let i = 0; i < 4; i++){
+            if(properties[i] > 100 || properties[i] < 0) properties[i] = 0;
+        }
+        return properties;
+    }
+    else if(type === 'xyz'){
+        for(let i = 0; i < 3; i++){
+            if(properties[i] < 0 || properties[i] > 109) properties[i] = 0;
         }
         return properties;
     }
@@ -432,8 +483,14 @@ function generateInputText(type, values, a){
             body = '(' + values[0] + '°, ' + values[1] + '%, ' + values[2] + '%' + alpha + ')';
             inputText = header + body;
             break;
+        case 'cmyk':
+            inputText = 'CMYK(' + values[0] + '%, ' + values[1] + '%, ' + values[2] + '%, ' + values[3] + '%)';
+            break;
+        case 'xyz':
+            inputText = 'xyz(' + values[0] + ', ' + values[1] + ', ' + values[2] + ')';
+            break;
     }
-
+    
     return inputText;
 }
 
