@@ -284,10 +284,10 @@ function rgbToHsv(r, g, b, alpha) {
     return [h, s, v, alpha];
 }
 
-function hsvToRgb(hue, saturation, value, alpha) {
+function hsvToRgb(hue, saturation, volume, alpha) {
     saturation /= 100;
-    value /= 100;
-    let chroma = value * saturation;
+    volume /= 100;
+    let chroma = volume * saturation;
     hue /= 60;
     let x = chroma * (1- Math.abs((hue % 2) - 1));
     let r1, g1, b1;
@@ -306,7 +306,7 @@ function hsvToRgb(hue, saturation, value, alpha) {
       ([r1, g1, b1] = [chroma, 0, x]);
     }
     
-    let m = value - chroma;
+    let m = volume - chroma;
     let [r,g,b] = [r1+m, g1+m, b1+m];
      
     return [

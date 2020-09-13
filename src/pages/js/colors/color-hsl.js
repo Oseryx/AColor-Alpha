@@ -1,5 +1,5 @@
 const { ipcRenderer } = require('electron');
-const clipbaord = require('copy-text-to-clipboard');
+const clipboard = require('copy-text-to-clipboard');
 const range = document.getElementById('range');
 const hiddentContext = range.getContext('2d');
 const gradient = hiddentContext.createLinearGradient(0, 0, range.width, 0);
@@ -294,10 +294,11 @@ function setInputs(rgba, except){
     if(except !== 'alpha') document.getElementById('alpha').value = rgba[3] * 100;
     document.getElementById('transparency').innerHTML = ('Opacity: ' + rgba[3]);
 
-    if(except !=='hex') document.getElementById('hex').value = '#' + rgbaToHex(rgba[0], rgba[1], rgba[2], rgba[3]);
-    if(except !=='rgb') document.getElementById('rgb').value = generateInputText('rgb', rgba, rgba[3]);
-    if(except !=='hsl') document.getElementById('hsl').value = generateInputText('hsl', rgbToHsl(rgba[0], rgba[1], rgba[2]), rgba[3]);
-    if(except !=='hsv') document.getElementById('hsv').value = generateInputText('hsv', rgbToHsv(rgba[0], rgba[1], rgba[2]), rgba[3]);
+    if(except !== 'hex') document.getElementById('hex').value = '#' + rgbaToHex(rgba[0], rgba[1], rgba[2], rgba[3]);
+    if(except !== 'rgb') document.getElementById('rgb').value = generateInputText('rgb', rgba, rgba[3]);
+    if(except !== 'hsl') document.getElementById('hsl').value = generateInputText('hsl', rgbToHsl(rgba[0], rgba[1], rgba[2]), rgba[3]);
+    if(except !== 'hsv') document.getElementById('hsv').value = generateInputText('hsv', rgbToHsv(rgba[0], rgba[1], rgba[2]), rgba[3]);
+    if(except !== 'cmyk') document.getElementById('cmyk').value = generateInputText('cmyk', rgbToCmyk(rgba[0], rgba[1], rgba[2]), rgba[3]);
 }
 
 document.getElementById('rgb').addEventListener('input', () => {
@@ -326,6 +327,15 @@ document.getElementById('hsl').addEventListener('input', () => {
     predict(rgba);
 });
 
+document.getElementById('cmyk').addEventListener('input', () => {
+    const value = document.getElementById('cmyk').value;
+    const cmyk = filterInput(value, 'cmyk');
+    const rgba = cmykToRgb(cmyk[0], cmyk[1], cmyk[2], cmyk[3]);
+
+    setInputs(rgba, 'cmyk');
+    predict(rgba);
+});
+
 // ----------------------------------------------------------//
 //                                                           //
 // ----------------------------------------------------------//
@@ -348,6 +358,12 @@ document.getElementById('hsv').addEventListener('change', () => {
     value.value = generateInputText('hsv', values, values[3]);
 });
 
+document.getElementById('cmyk').addEventListener('change', () => {
+    const value = document.getElementById('cmyk');
+    const values = filterInput(value.value, 'cmyk');
+    value.value = generateInputText('cmyk', values, 1);
+});
+
 function predict(rgba){
     const rangePosX =  predictRangePos(rgba[0], rgba[1], rgba[2], range.width) - 7.5;
     document.getElementById('selector').style.setProperty('left', rangePosX + 'px');
@@ -364,10 +380,11 @@ function predict(rgba){
 for(let i = 0; i < document.getElementsByClassName('clipboard').length; i++){
     const clip = document.getElementsByClassName('clipboard')[i];
     clip.addEventListener('click', () => {
-        if(i === 0) clipbaord(document.getElementById('hex').value);
-        else if(i === 1) clipbaord(document.getElementById('rgb').value);
-        else if(i === 2) clipbaord(document.getElementById('hsl').value);
-        else if(i === 3) clipbaord(document.getElementById('hsv').value);
+        if(i === 0) clipboard(document.getElementById('hex').value);
+        else if(i === 1) clipboard(document.getElementById('rgb').value);
+        else if(i === 2) clipboard(document.getElementById('hsl').value);
+        else if(i === 3) clipboard(document.getElementById('hsv').value);
+        else if(i === 4) clipboard(document.getElementById('cmyk').value);
 
         clip.classList.toggle('copied');
         setTimeout(() => {
