@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Color Harmony</title>
     <link rel="stylesheet" href="css/tilebar.css">
+    <script src="js/colors/utils.js"></script>
     <link rel="stylesheet" href="css/color-harmony.css">
     <script type="module" src="js/color-harmony.js"></script>
+    <script type="module" src="js/colors/color-wheel.js"></script>
     <script type="module" src="js/manager/color-harmony-option-manager.js"></script>
     <script type="module" src="js/colors/image-extractor.js"></script>
 </head>
@@ -37,8 +39,12 @@
             </div>
         </div>
         <div class="main-content" id="mainBox">
-            <div class="main-content-box">
-                <canvas id="colorwheel" width="200px" height="200px"></canvas>
+            <div class="main-content-box colorwheel">
+                <div class="chroma-circle">
+                    <canvas id="colorwheel" width="300px" height="300px"></canvas>
+                    <canvas id="colorwheel-volume" width="302px" height="302px"></canvas>
+                </div>
+                <input type="range" name="" min="0" max="100" id="volume" value="100">
             </div>
             <div class="main-content-box image-extractor-box">
                 <div class="traitement" id="image-box">
@@ -46,6 +52,7 @@
                         <a class="drag-drop-text">Drag and drop an image</a>
                     </div>
                 </div>
+                <div class="traitement-panel"></div>
             </div>
             <div class="main-content-box histograms-box">
             </div>
