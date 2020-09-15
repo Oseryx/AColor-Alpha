@@ -40,11 +40,50 @@
         </div>
         <div class="main-content" id="mainBox">
             <div class="main-content-box colorwheel">
-                <div class="chroma-circle">
-                    <canvas id="colorwheel" width="300px" height="300px"></canvas>
-                    <canvas id="colorwheel-volume" width="302px" height="302px"></canvas>
+                <div class="chroma-panel">
+                    <div class="chroma-circle-container">
+                        <div class="chroma-circle">
+                            <canvas id="colorwheel" width="300px" height="300px"></canvas>
+                            <canvas id="colorwheel-volume" width="302px" height="302px"></canvas>
+                            <canvas id="colorwheel-pickers" width="300px" height="300px"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <input type="range" name="" min="0" max="100" id="volume" value="100">
+                <div class="chroma-palette-panel">
+                    <div class="current-palette-title">
+                        Current Palette:
+                    </div>
+                    <div class="current-palette">
+                        <div class="current-palette-item-container" id="current-palette">
+                            <div class="current-palette-item" id="4"></div>
+                            <div class="current-palette-item" id="3"></div>
+                            <div class="current-palette-item" id="0"></div>
+                            <div class="current-palette-item" id="1"></div>
+                            <div class="current-palette-item" id="2"></div>
+                        </div>
+                    </div>
+                    <div class="harmony-selector">
+                        <a>Harmony Mode:</a>
+                        <select id="harmony-mode">
+                            <option value="analogus">Analogus</option>
+                            <option value="mono">Monochromatic</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="sliders">
+                        <div class="color-mode">
+                            <select id="color-mode">
+                                <option value="rgb">RGB</option>
+                                <option value="hsv">HSV</option>
+                            </select>
+                        </div>
+                        <input type="range" name="" id="hue" min="0" max="360">
+                        <input type="range" name="" id="saturation" min="0" max="100">
+                        <input type="range" name="" id="volume" min="0" max="100">
+                    </div>
+                </div>
+
+                <!-- <input type="range" name="" min="0" max="100" id="volume" value="100"> -->
             </div>
             <div class="main-content-box image-extractor-box">
                 <div class="traitement" id="image-box">

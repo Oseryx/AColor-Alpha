@@ -517,12 +517,20 @@ function xyToPolar(x, y){
     let distance = Math.sqrt(x * x + y * y);
     let phi = Math.atan2(y, x);
 
-    return{
+    return {
         distance,
         phi
     }
 }
 
+function calculateDistance(x1, x2, y1, y2){
+    return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+}
+
 function radToDeg(rad) {
     return ((rad + Math.PI) / (2 * Math.PI)) * 360;
+}
+
+function degToRad(deg){
+  return deg * (Math.PI / 180);
 }
