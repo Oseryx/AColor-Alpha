@@ -58,6 +58,9 @@ body{
     /* background-color: red; */
     cursor: pointer;
 }
+.selected-item{
+    border: solid 1px rgb(10, 10, 10);
+}
 .harmony-selector{
     width: 100%;
     margin-top: 5px;
@@ -79,10 +82,40 @@ body{
     cursor: pointer;
 }
 .sliders{
-    margin-top: 5px;
+    margin-top: 10px;
     width: 100%;
     display: flex;
+    justify-content: center;
+}
+.sliders-box{
+    width: 95%;
+    display: flex;
     flex-direction: column;
+}
+.color-mode{
+    display: flex;
+    height: 30px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.color-mode-title{
+    width: 100px;
+    height: 100%;
+    background-color: rgb(10, 10, 10);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 1px;
+}
+.color-mode select{
+    width: 100px;
+    height: 100%;
+    background-color: rgb(10, 10, 10);
+    color: wheat;
+    border-radius: 0px 5px 5px 0px;
+    outline: none;
+    border: none;
+    cursor: pointer;
 }
 .chroma-circle{
     position: relative;

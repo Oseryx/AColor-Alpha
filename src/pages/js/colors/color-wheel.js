@@ -21,7 +21,7 @@ const rowLength = radius * 2;
 const pixelWidth = 4;
 
 let volume = 100;
-let targetPickerIndex = -1;
+let targetPickerIndex = 0;
 let isMovingPicker = false;
 
 //Define the pickers
@@ -33,47 +33,53 @@ const pickers = [
         color: {
             //Set the rgb and hsv values of the picker
             rgb: { r: 0, g: 0, b: 0 },
-            hsv: { h: 0, s: 0, v: 0 }
+            hsv: { h: 0, s: 0, v: 100 }
         }
     },
     {
         pos: { x: 150, y: 150 },
         color: {
             rgb: { r: 0, g: 0, b: 0 },
-            hsv: { h: 0, s: 0, v: 0 }
+            hsv: { h: 0, s: 0, v: 100 }
         }
     },
     {
         pos: { x: 200, y: 200 },
         color: {
             rgb: { r: 0, g: 0, b: 0 },
-            hsv: { h: 0, s: 0, v: 0 }
+            hsv: { h: 0, s: 0, v: 100 }
         }
     },
     {
         pos: { x: 200, y: 150 },
         color: {
             rgb: { r: 0, g: 0, b: 0 },
-            hsv: { h: 0, s: 0, v: 0 }
+            hsv: { h: 0, s: 0, v: 100 }
         }
     },
     {
         pos: { x: 150, y: 200 },
         color: {
             rgb: { r: 0, g: 0, b: 0 },
-            hsv: { h: 0, s: 0, v: 0 }
+            hsv: { h: 0, s: 0, v: 100 }
         }
     }
 ];
 
 let pickersOrder = [4, 3, 0, 1, 2];
-let currentFocusPicker = 0;
+//let targetPickerIndex = 0;
+let colorMode = 'hsv';
+
+const RH = document.getElementById('RH');
+const GS = document.getElementById('GS');
+const BV = document.getElementById('BV');
 
 const pickerRadius = 15;
 
 let analogusAngle = 30;
 let analogusRotation = degToRad(-90);
 let analogusLeaderOriginalDistance = 125;
+let inverseAnalogusPickers = false;
 
 /*
     How the color wheel will be done:
@@ -101,7 +107,7 @@ let analogusLeaderOriginalDistance = 125;
 */
 
 drawWheel();
-drawVolume(volume);
+drawVolume(0);
 analogus(-1);
 drawPickers();
 setPaletteInputs();
@@ -136,7 +142,8 @@ function drawWheel(){
 
             //Calculate the hue and the saturation, 
             //The hue is given by calculating the angle between the given point and the center if the circle
-            const hue = Math.round(radToDeg(phi));
+            const oldHue = Math.round(radToDeg(phi));
+            const hue = (oldHue > 180) ? oldHue - 180 : oldHue + 180;
             //The saturation is calculated by dividing the distance by the radius if the circle
             const saturation = distance / radius;
 
@@ -165,10 +172,10 @@ function drawWheel(){
 //The drawVolume function draws a black rectangle that cover all the canvas but we add an alpha value to it, which is by default 0
 //so with this little trick we'll the same result if we add a volume value to the chromatic circle 
 //and using these simple lines of code we avoid recalculating the chromatic circle and a lot of maths stuff that makes the program slower
-function drawVolume(volume){
+function drawVolume(index){
     //When the volume is to 100 that mean that we have no effect to apply so to get the alpha we get the difference between 100 and the volume
     //Then we divide by 100
-    volume = (100 - volume) / 100;
+    const volume = (100 - pickers[index].color.hsv.v) / 100;
     //We clear the canvas every time when the function is called
     colorWheelVolumeCtx.clearRect(0, 0, colorWheelVolume.width, colorWheelVolume.height);
     //We set the style to black and set the volume parameter for the alpha
@@ -185,7 +192,7 @@ function drawPickers() {
         //We target the picker
         const picker = pickers[i];
         //If the volume is too low that mean we're in dark colors so we set the picker to white color otherwise we set a black color for the picker
-        colorWheelPickersCtx.strokeStyle = (volume < 40) ? '#fff' : '#000';
+        colorWheelPickersCtx.strokeStyle = (pickers[i].color.hsv.v < 40) ? '#fff' : '#000';
         //We begin the path
         colorWheelPickersCtx.beginPath();
         //We draw the picker which is a circle
@@ -193,7 +200,7 @@ function drawPickers() {
         //We enable the stroke so we can see it
         colorWheelPickersCtx.stroke();
 
-        picker.color = getColor(picker.pos.x, picker.pos.y);
+        picker.color = getColor(picker.pos.x, picker.pos.y, i);
         colorWheelPickersCtx.fillStyle = ('rgb(' + picker.color.rgb.r + ',' + picker.color.rgb.g + ',' + picker.color.rgb.b + ')');
         colorWheelPickersCtx.fill();
     }
@@ -201,18 +208,20 @@ function drawPickers() {
     setSliders();
 }
 
-function getColor(x, y){
+function getColor(x, y, index){
     x -= radius;
     y -= radius;
 
     //We reproduce the same steps ad the drawWheel function but we won't use it to define the hsv, we'll get the hue and the saturation
     const { distance, phi } = xyToPolar(x, y);
-    const hue = Math.round(radToDeg(phi));
+    const oldHue = Math.round(radToDeg(phi));
+
+    const hue = (oldHue >= 180) ? oldHue - 180 : oldHue + 180;
     const saturation = distance / radius * 100;
 
     //We get the volume value using the volume slide
     //const volume = Number(document.getElementById('volume').value);
-    const volume = 100;
+    const volume = pickers[index].color.hsv.v;
 
     //We convert from hsv to rgb
     const rgb = hsvToRgb(hue, saturation, volume, 1);
@@ -271,10 +280,35 @@ function analogus(movedPickerIndex){
         //We calculate the picker rotation
         const pickerRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
 
-        //We calculate the analogus angle by substracting the leader rotation from the picker rotation 
+        const rotationDirection = (movedPickerIndex < 3) ? 1 : -1;
+        const angle = (radToDeg(leaderRotation) < 180) ? (360 - radToDeg(leaderRotation)) - (360  - radToDeg(pickerRotation)) : radToDeg(leaderRotation) - radToDeg(pickerRotation);
+
+        if(rotationDirection === 1){            
+            if(radToDeg(leaderRotation) < 180){
+                if(angle > 180 || angle < 0) inverseAnalogusPickers = true;
+                else inverseAnalogusPickers = false;
+            }
+            else {
+                if(angle < 180 && angle > 0) inverseAnalogusPickers = true;
+                else inverseAnalogusPickers = false;
+            }
+        }
+        else{
+            if(radToDeg(leaderRotation) < 180){
+                if(angle < 180 && angle > 0) inverseAnalogusPickers = true;
+                else inverseAnalogusPickers = false;
+            }
+            else {
+                if(angle > 180 || angle < 0) inverseAnalogusPickers = true;
+                else inverseAnalogusPickers = false;
+            }
+        }
+
+        //We calculate the analogus angle by substracting the leader rotation from the picker rotation
         analogusAngle = Math.abs(radToDeg(leaderRotation) - radToDeg(pickerRotation));
         //If the angle is greater then 180 we set the angle by the susbstraction of 360 minus the calculated angle
-        if(analogusAngle > 180) analogusAngle = 360 - analogusAngle;
+        //if(analogusAngle > 180) inversePickers = true;
+        if(analogusAngle > 180) analogusAngle = (360 - analogusAngle);
         //If the picker index is odd that means we're moving a picker that is two times far away from the leader picker so we divide by 2 if it's the case
         analogusAngle = (movedPickerIndex % 2 === 1) ? analogusAngle : analogusAngle / 2;
     }
@@ -299,12 +333,19 @@ function analogus(movedPickerIndex){
         //Same thing as the x position calculation but we use sine for the y position
         const y = Math.sin(rad) * ((distance <= radius) ? distance : radius) + radius;
         
-        //If we are in the 3rd picker that mean we should come back to the leader picker and move back by the oposite of the analogusAngle
-        if(i === 2) rad = analogusRotation - degToRad(analogusAngle);
-        //If we're after the 3rd picker we move bac the angle instead of moving forwards
-        else if(i >= 3) rad -= degToRad(analogusAngle);
-        //If all these condition are not applied then we still in the 3 first pickers so we move the angle forwards
-        else rad += degToRad(analogusAngle);
+        if(inverseAnalogusPickers == false){
+            //If we are in the 3rd picker that mean we should come back to the leader picker and move back by the oposite of the analogusAngle
+            if(i === 2) rad = analogusRotation - degToRad(analogusAngle);
+            //If we're after the 3rd picker we move bac the angle instead of moving forwards
+            else if(i >= 3) rad -= degToRad(analogusAngle);
+            //If all these condition are not applied then we still in the 3 first pickers so we move the angle forwards
+            else rad += degToRad(analogusAngle);
+        }
+        else{
+            if(i === 2) rad = analogusRotation + degToRad(analogusAngle);
+            else if(i >= 3) rad += degToRad(analogusAngle);
+            else rad -= degToRad(analogusAngle);
+        }
 
         //We set the picker x and y positions
         pickers[i].pos = { x: x, y: y };
@@ -332,13 +373,14 @@ colorWheelPickers.addEventListener('mousedown', (event) => {
 
     if(targetPickerIndex !== -1){
         isMovingPicker = true;
+        document.getElementsByClassName('selected-item')[0].classList.toggle('selected-item');
+        document.getElementById(targetPickerIndex).classList.toggle('selected-item');
         //console.log(targetPickerIndex);
     }
 });
 
 document.addEventListener('mouseup', () => {
     isMovingPicker = false;
-    targetPickerIndex = -1;
 });
 
 document.addEventListener('mousemove', (event) => {
@@ -356,6 +398,75 @@ document.addEventListener('mousemove', (event) => {
         };
 
         analogus(targetPickerIndex, distance);
+        drawVolume(targetPickerIndex);
+        drawPickers();
+    }
+});
+
+document.getElementById('color-mode').addEventListener('change', () => {
+    colorMode = document.getElementById('color-mode').value;
+
+    if(colorMode === 'hsv'){
+        RH.max = 359;
+        GS.min = 1;
+        GS.max = BV.max = 100;
+    }
+    else if(colorMode == 'rgb'){
+        GS.min = 0;
+        RH.max = GS.max = BV.max = 255;
+    }
+    
+    setSliders();
+});
+
+//Sliders inputs
+RH.addEventListener('input', () => {
+    const value = RH.value;
+    if(colorMode === 'hsv'){
+        const hue = value;
+        const saturation = pickers[targetPickerIndex].color.hsv.s / 100;
+
+        const radian = degToRad(hue);
+        const distance = radius * saturation;
+
+        const x = Math.cos(radian) * distance + radius;
+        const y = Math.sin(radian) * distance + radius;
+
+        pickers[targetPickerIndex].pos = {
+            x: x,
+            y: y
+        }
+
+        analogus(targetPickerIndex);
+        drawPickers();
+    }
+});
+GS.addEventListener('input', () => {
+    const value = GS.value;
+    if(colorMode === 'hsv'){
+        const hue = pickers[targetPickerIndex].color.hsv.h;
+        const saturation = value / 100;
+
+        const radian = degToRad(hue);
+        const distance = radius * saturation;
+
+        const x = Math.cos(radian) * distance + radius;
+        const y = Math.sin(radian) * distance + radius;
+
+        pickers[targetPickerIndex].pos = {
+            x: x,
+            y: y
+        }
+
+        analogus(targetPickerIndex);
+        drawPickers();
+    }
+});
+BV.addEventListener('input', () => {
+    const value = BV.value;
+    if(colorMode === 'hsv'){
+        pickers[targetPickerIndex].color.hsv.v = value;
+        if(targetPickerIndex === targetPickerIndex) drawVolume(targetPickerIndex);
         drawPickers();
     }
 });
@@ -368,16 +479,8 @@ function getRgb(index){
 
 function setPalette(){
     for(let i = 0; i < pickers.length; i++){
-        document.getElementsByClassName('current-palette-item')[i].style.setProperty('background-color', getRgb(pickersOrder[i]));
+        document.getElementById(i).style.setProperty('background-color', getRgb(i));
     }
-    // document.getElementsByClassName('current-palette-item')[0].style.setProperty('background-color', getRgb(4));
-    // document.getElementsByClassName('current-palette-item')[1].style.setProperty('background-color', getRgb(3));
-    // document.getElementsByClassName('current-palette-item')[2].style.setProperty('background-color', getRgb(0));
-    // document.getElementsByClassName('current-palette-item')[3].style.setProperty('background-color', getRgb(1));
-    // document.getElementsByClassName('current-palette-item')[4].style.setProperty('background-color', getRgb(2));
-    // for(let i = 0; i < pickers.length; i++){
-    //     document.getElementById(i).style.setProperty('background-color', getRgb(i));
-    // }
 }
 
 function setPaletteInputs(){
@@ -387,13 +490,30 @@ function setPaletteInputs(){
 function setPaletteItemInput(index){
     const paletteItem = document.getElementsByClassName('current-palette-item')[index];
     paletteItem.addEventListener('click', () => {
-        currentFocusPicker = pickersOrder[index];
-        setSliders()
+        targetPickerIndex = pickersOrder[index];
+        document.getElementsByClassName('selected-item')[0].classList.toggle('selected-item');
+        paletteItem.classList.toggle('selected-item');
+        setSliders();
     });
 }
 
 function setSliders(){
-    document.getElementById('hue').value = pickers[currentFocusPicker].color.hsv.h;
-    document.getElementById('saturation').value = pickers[currentFocusPicker].color.hsv.s;
-    document.getElementById('volume').value = pickers[currentFocusPicker].color.hsv.v;
+    let rh = 0;
+    let gs = 0;
+    let bv = 0;
+
+    if(colorMode === 'hsv'){
+        rh = pickers[targetPickerIndex].color.hsv.h;
+        gs = pickers[targetPickerIndex].color.hsv.s;
+        bv = pickers[targetPickerIndex].color.hsv.v;
+    }
+    else if(colorMode === 'rgb'){
+        rh = pickers[targetPickerIndex].color.rgb.r;
+        gs = pickers[targetPickerIndex].color.rgb.g;
+        bv = pickers[targetPickerIndex].color.rgb.b;
+    }
+
+    RH.value = rh;
+    GS.value = gs
+    BV.value = bv;
 }

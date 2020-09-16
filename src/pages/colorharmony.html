@@ -57,7 +57,7 @@
                         <div class="current-palette-item-container" id="current-palette">
                             <div class="current-palette-item" id="4"></div>
                             <div class="current-palette-item" id="3"></div>
-                            <div class="current-palette-item" id="0"></div>
+                            <div class="current-palette-item selected-item" id="0"></div>
                             <div class="current-palette-item" id="1"></div>
                             <div class="current-palette-item" id="2"></div>
                         </div>
@@ -71,15 +71,20 @@
                         </select>
                     </div>
                     <div class="sliders">
-                        <div class="color-mode">
-                            <select id="color-mode">
-                                <option value="rgb">RGB</option>
-                                <option value="hsv">HSV</option>
-                            </select>
+                        <div class="sliders-box">
+                            <div class="color-mode">
+                                <div class="color-mode-title">
+                                    <a>Color Mode: </a>
+                                </div>
+                                <select id="color-mode">
+                                    <option value="hsv">HSV</option>
+                                    <option value="rgb">RGB</option>
+                                </select>
+                            </div>
+                            <input type="range" name="" id="RH" min="0" max="359">
+                            <input type="range" name="" id="GS" min="1" max="100">
+                            <input type="range" name="" id="BV" min="0" max="100">
                         </div>
-                        <input type="range" name="" id="hue" min="0" max="360">
-                        <input type="range" name="" id="saturation" min="0" max="100">
-                        <input type="range" name="" id="volume" min="0" max="100">
                     </div>
                 </div>
 
