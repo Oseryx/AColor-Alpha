@@ -20,7 +20,6 @@ const rowLength = radius * 2;
 //The pixel width in the data array of the generated image each pixels is 4 items of the array so to mive on the next pixel we move by 4 items
 const pixelWidth = 4;
 
-let volume = 100;
 let targetPickerIndex = 0;
 let isMovingPicker = false;
 
@@ -68,7 +67,8 @@ const pickers = [
 
 let pickersOrder = [4, 3, 0, 1, 2];
 //let targetPickerIndex = 0;
-let colorMode = 'hsv';
+
+let harmonyMode = 'analogus';
 
 const RH = document.getElementById('RH');
 const GS = document.getElementById('GS');
@@ -76,11 +76,21 @@ const BV = document.getElementById('BV');
 
 const pickerRadius = 15;
 
+//Analogus variables
+
 let analogusAngle = 30;
 let analogusRotation = degToRad(-90);
 let analogusLeaderOriginalDistance = 125;
 let inverseAnalogusPickers = false;
 
+//Monochromatic variables
+let monochromaticRotation = degToRad(-90);
+let monochromaticDistances = [70, 70];
+
+//Triad variables
+const triadAngle = 120;
+let triadRotation = degToRad(-90);
+let triadDistances =  new Array(4).fill(0);
 /*
     How the color wheel will be done:
 
@@ -108,8 +118,7 @@ let inverseAnalogusPickers = false;
 
 drawWheel();
 drawVolume(0);
-analogus(-1);
-drawPickers();
+harmony(-1);
 setPaletteInputs();
 setSliders();
 
@@ -184,6 +193,8 @@ function drawVolume(index){
     colorWheelVolumeCtx.fillRect(0, 0, colorWheelVolume.width, colorWheelVolume.height);
 }
 
+//The drawPickers function is responsible for rendering the pickers (not calculating their positions)
+//It defines the palette and the sliders also
 function drawPickers() {
     //We clear the rect every time we call the function
     colorWheelPickersCtx.clearRect(0, 0, colorWheelPickers.width, colorWheelPickers.height);
@@ -191,6 +202,19 @@ function drawPickers() {
     for(let i = 0; i < pickers.length; i++){
         //We target the picker
         const picker = pickers[i];
+
+        //We draw a line to the picker
+        colorWheelPickersCtx.beginPath();
+        //Se set the stroke style to white
+        colorWheelPickersCtx.strokeStyle = '#fff';
+        //We move to the center of the chromatic circle
+        colorWheelPickersCtx.moveTo(radius, radius);
+        //We set the line to the center of the picker (the overflow we'll be hidden by the drawing of the circles so we'll have no weird extra line)
+        colorWheelPickersCtx.lineTo(picker.pos.x, picker.pos.y);
+        //We enable the stroke to see the draw line
+        colorWheelPickersCtx.stroke();
+
+        //Now we'll draw the pickers
         //If the volume is too low that mean we're in dark colors so we set the picker to white color otherwise we set a black color for the picker
         colorWheelPickersCtx.strokeStyle = (pickers[i].color.hsv.v < 40) ? '#fff' : '#000';
         //We begin the path
@@ -204,8 +228,23 @@ function drawPickers() {
         colorWheelPickersCtx.fillStyle = ('rgb(' + picker.color.rgb.r + ',' + picker.color.rgb.g + ',' + picker.color.rgb.b + ')');
         colorWheelPickersCtx.fill();
     }
+    drawPickerOntop();
+    //We set the palette
     setPalette();
+    //We set the sliders
     setSliders();
+}
+
+function drawPickerOntop(){
+    const picker = pickers[targetPickerIndex];
+    colorWheelPickersCtx.strokeStyle = (picker.color.hsv.v < 40) ? '#fff' : '#000';
+    colorWheelPickersCtx.beginPath();
+    colorWheelPickersCtx.arc(picker.pos.x, picker.pos.y, pickerRadius, 0, 2 * Math.PI);
+    colorWheelPickersCtx.stroke();
+
+    picker.color = getColor(picker.pos.x, picker.pos.y, targetPickerIndex);
+    colorWheelPickersCtx.fillStyle = ('rgb(' + picker.color.rgb.r + ',' + picker.color.rgb.g + ',' + picker.color.rgb.b + ')');
+    colorWheelPickersCtx.fill();
 }
 
 function getColor(x, y, index){
@@ -241,16 +280,34 @@ function getColor(x, y, index){
 }
 
 //Harmonies functions
+function harmony(movedPickerIndex){
+    if(harmonyMode === 'analogus'){
+        analogus(movedPickerIndex);
+    }
+    else if(harmonyMode === 'monochromatic'){
+        monochromatic(movedPickerIndex);
+    }
+    else if(harmonyMode === 'triad'){
+        triad(movedPickerIndex);
+    }
+    else if(harmonyMode === 'complementary'){
+        complementary(movedPickerIndex);
+    }
+    drawPickers();
+}
+
 //Analogus harmony
 function analogus(movedPickerIndex){
     //Check if the index is the leader picker
 
-    //if true 
-    //      |-> We calculate  the distance to shrink if the leader picker shrink it's distance to the center and we shrink all of the picker
-    //      |-> We calculate the new rotation, if the leader picker rotation changes we rotate all of the other pickers
-    //else 
-    //      |-> We calculate the angle relative to the leader picker and we move all pickers by the new angle except the leader picker
-    
+    /*
+      if true 
+            |-> We calculate  the distance to shrink if the leader picker shrink it's distance to the center and we shrink all of the picker
+            |-> We calculate the new rotation, if the leader picker rotation changes we rotate all of the other pickers
+      else 
+            |-> We calculate the angle relative to the leader picker and we move all pickers by the new angle except the leader picker
+    */
+
     //We get the leader picker
     const leaderPicker = pickers[0];
     //We define the rad that'll be used for pickers calculations
@@ -280,20 +337,31 @@ function analogus(movedPickerIndex){
         //We calculate the picker rotation
         const pickerRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
 
+        //We calculate in which direction is the rotation if it's the right pickers so it's 1 if not it's -1
         const rotationDirection = (movedPickerIndex < 3) ? 1 : -1;
+        //We calculate the angle between the picker and the leader picker, if we are on the top of the circle we calculate the difference between 360 and the calculated angle
+        //If we not calculate the angle normaly
         const angle = (radToDeg(leaderRotation) < 180) ? (360 - radToDeg(leaderRotation)) - (360  - radToDeg(pickerRotation)) : radToDeg(leaderRotation) - radToDeg(pickerRotation);
-
-        if(rotationDirection === 1){            
+        
+        //If we are moving the right pickers
+        if(rotationDirection === 1){
+            //If the leader is in the top of the circle
             if(radToDeg(leaderRotation) < 180){
+                //If x ∈ ] - ∞; 0 [ ∪ ] 180; + ∞ [ that means we've passed the leader rotation by 180⁰ so we inverse the pickers
                 if(angle > 180 || angle < 0) inverseAnalogusPickers = true;
+                //If not we don't inverse
                 else inverseAnalogusPickers = false;
             }
+            //If not
             else {
+                //If x ∈ ] 0; 180 [ that means we've passed the leader rotation by 180⁰ so we inverse the pickers
                 if(angle < 180 && angle > 0) inverseAnalogusPickers = true;
                 else inverseAnalogusPickers = false;
             }
         }
+        //If we are moving the left pickers
         else{
+            //Same thing as right pickers but we inverse conditions after checking in which part of the circle(top or bottom) we're
             if(radToDeg(leaderRotation) < 180){
                 if(angle < 180 && angle > 0) inverseAnalogusPickers = true;
                 else inverseAnalogusPickers = false;
@@ -307,7 +375,6 @@ function analogus(movedPickerIndex){
         //We calculate the analogus angle by substracting the leader rotation from the picker rotation
         analogusAngle = Math.abs(radToDeg(leaderRotation) - radToDeg(pickerRotation));
         //If the angle is greater then 180 we set the angle by the susbstraction of 360 minus the calculated angle
-        //if(analogusAngle > 180) inversePickers = true;
         if(analogusAngle > 180) analogusAngle = (360 - analogusAngle);
         //If the picker index is odd that means we're moving a picker that is two times far away from the leader picker so we divide by 2 if it's the case
         analogusAngle = (movedPickerIndex % 2 === 1) ? analogusAngle : analogusAngle / 2;
@@ -348,8 +415,130 @@ function analogus(movedPickerIndex){
         }
 
         //We set the picker x and y positions
-        pickers[i].pos = { x: x, y: y };
+        picker.pos = { x: x, y: y };
     }
+}
+
+//Monochrmoatic harmony
+function monochromatic(movedPickerIndex){
+    /*
+    The monochromatic harmony is very simple they are 3 rules to apply (the monochromatic harmony is very special also we have 3 leader pickers and 2 non leader
+    the 3 leader pickers are in the same position picking the same color but they have different volumes so different shades):
+    - They all have the same rotation (monochromatic harmony use only one hue comparing to other harmonies like triad analogus and so on)
+    - There is no distance factor but distance difference, the distance between teh non leader picker and the center is calculated 
+        by substracting the leader picker distance by the distance between the leader picker and the non leadre picker
+    - If the non leader picker has a distance less then 0 we calculate it's distance using the same formula but we'll sum them instead of substracting them
+    */
+
+    //We calculate the distance between the leader picker and the center of the chromatic circle
+    //If we're moving a non leader picker we set the leader distance to the distance between the center and the picker with index 0
+    const leaderDistance = (movedPickerIndex > 2 || movedPickerIndex === -1) ? calculateDistance(pickers[0].pos.x - radius, 0, pickers[0].pos.y - radius, 0) 
+    //Otherwise we're moving a leader picker so we calculate the distance normaly, so when we're moving the 2 others leader keys they won't be blocked by the leader picker 0
+    : calculateDistance(pickers[movedPickerIndex].pos.x - radius, 0, pickers[movedPickerIndex].pos.y - radius, 0);
+
+    //If we're generating a monochromatic harmony we set some default volume values
+    if(movedPickerIndex === -1){
+        pickers[4].color.hsv.v = 90;
+        pickers[3].color.hsv.v = 70;
+        pickers[0].color.hsv.v = 90;
+        pickers[1].color.hsv.v = 75;
+        pickers[2].color.hsv.v = 60;
+    }
+    //If we're moving a non leader picker we calculate the distance between the moved picker and the leader picker
+    else if(movedPickerIndex > 2){
+        monochromaticDistances[movedPickerIndex - 3] = calculateDistance(pickers[0].pos.x - radius, pickers[movedPickerIndex].pos.x - radius, pickers[0].pos.y - radius, pickers[movedPickerIndex].pos.y - radius);
+        monochromaticDistances[movedPickerIndex - 3] *= (calculateDistance(pickers[movedPickerIndex].pos.x - radius, 0, pickers[movedPickerIndex].pos.y - radius, 0) <= leaderDistance) ? 1 : -1;
+    }
+    //If we're not generating a monochromatic hramoy, we calculate the rotation of the monochromatic harmoy
+    if(movedPickerIndex !== -1) monochromaticRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
+
+    //We loop trough each picker
+    for(let i = 0; i < pickers.length; i++){
+        const picker = pickers[i];
+        //We define the default distance
+        let distance = 0;
+
+        //If we're generating a monochromatic harmony we set the distance to 125 for leader pickers and 55 for non leader pickers
+        if(movedPickerIndex === -1){
+            distance = (i < 3) ? 125 : 55;
+        }
+        //If the target picker is a non leader picker and we're not moving a non leader pickers (Cause if it's the case we won't be able to move the non leader picker)
+        else if(i > 2 && movedPickerIndex < 3){
+            //We set the distance to the difference between the leader distance and the monochromatic distance that we calculated earlier
+            //If the result is less then 0 so we set the distance to the sum between the leader distance and the monochromatic distance
+            distance = (leaderDistance - monochromaticDistances[i - 3] >= 0 && leaderDistance - monochromaticDistances[i - 3] <= radius) ? leaderDistance - monochromaticDistances[i - 3] : leaderDistance + monochromaticDistances[i - 3];
+        }
+        //Otherwise
+        else{
+            //If we're targeting a leader picker we set it's distance to the leader distance (cause we've calculated in the beginning of the function)
+            //Otherwise we calculate it normaly
+            distance = (i < 3) ? leaderDistance : calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0);
+        }
+
+        //We calculate the x and y position using the same formula in the analogus harmnoy (and it'll be used in all harmonies)
+        const x = Math.cos(monochromaticRotation) * ((distance <= radius) ? distance : radius) + radius;
+        const y = Math.sin(monochromaticRotation) * ((distance <= radius) ? distance : radius) + radius;
+
+        //We set the position
+        picker.pos = { x: x, y: y };
+    }
+}
+
+function triad(movedPickerIndex){
+    const leaderDistance = (movedPickerIndex > -1) ? calculateDistance(pickers[0].pos.x - radius, 0, pickers[0].pos.y - radius, 0) : 125;
+
+    if(movedPickerIndex !== -1){
+        triadRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
+        if(movedPickerIndex > 0) triadRotation -= degToRad(triadAngle)
+        if(movedPickerIndex > 2) triadRotation -= degToRad(triadAngle)
+    }
+    if(movedPickerIndex > 0) {
+        triadDistances[movedPickerIndex - 1] = leaderDistance - calculateDistance(pickers[movedPickerIndex].pos.x - radius, 0, pickers[movedPickerIndex].pos.y - radius, 0);
+        //console.log(triadDistances[movedPickerIndex - 1])
+    }
+
+    //Create a copy of the triad rotation to keep the original rotation
+    let renderingTriadRotation = triadRotation;
+
+    for(let i = 0; i < pickers.length; i++){
+        //console.log(triadDistances);
+        const picker = pickers[i];
+
+        let distance = 0;
+
+        if(i > 0 && movedPickerIndex === 0){
+            //const pickerDistance =  calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0);
+            distance = (leaderDistance - triadDistances[i - 1] > pickerRadius) ? leaderDistance - triadDistances[i - 1] : leaderDistance + triadDistances[i - 1];
+            //console.log((~~leaderDistance - ~~triadDistances[i - 1] >= pickerRadius) ? (~~leaderDistance - ~~triadDistances[i - 1]) : (~~leaderDistance + ~~triadDistances[i - 1]));
+        }
+        else if(i === 0){
+            distance = leaderDistance;
+        }
+        else if(i !== -1){
+            distance = calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0);
+        }
+        
+        //const pickerDistance = calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0);
+        distance = (movedPickerIndex === -1) ? ((i % 2 === 0) ? 125 : 90) : distance;
+        
+        const x = Math.cos(renderingTriadRotation) * distance + radius;
+        const y = Math.sin(renderingTriadRotation) * distance + radius;
+        
+        if(i === 0 || i === 2) renderingTriadRotation += degToRad(triadAngle);
+
+        picker.pos = { x: x, y: y };
+    }
+
+    //We set all the triad distances after generating the triad harmony
+    if(movedPickerIndex === -1){
+        for(let i = 1; i < 5; i++){
+            triadDistances[i] = leaderDistance - calculateDistance(pickers[i].pos.x - radius, 0, pickers[i].pos.y - radius, 0);
+        }
+    }
+}
+
+function complementary(movedPickerIndex){
+
 }
 
 //DOM Events
@@ -368,19 +557,22 @@ colorWheelPickers.addEventListener('mousedown', (event) => {
             targetPickerIndex = i;
         }
     }
-    
-    maxDistance = 10;
 
-    if(targetPickerIndex !== -1){
-        isMovingPicker = true;
-        document.getElementsByClassName('selected-item')[0].classList.toggle('selected-item');
-        document.getElementById(targetPickerIndex).classList.toggle('selected-item');
-        //console.log(targetPickerIndex);
-    }
+    if(maxDistance === pickerRadius) return;
+
+    maxDistance = pickerRadius;
+    isMovingPicker = true;
+
+    document.getElementsByClassName('selected-item')[0].classList.toggle('selected-item');
+    document.getElementById(targetPickerIndex).classList.toggle('selected-item');
+    setSliders();
+
+    colorWheelPickers.style.setProperty('cursor', 'crosshair');
 });
 
 document.addEventListener('mouseup', () => {
     isMovingPicker = false;
+    colorWheelPickers.style.setProperty('cursor', 'default');
 });
 
 document.addEventListener('mousemove', (event) => {
@@ -397,104 +589,109 @@ document.addEventListener('mousemove', (event) => {
             y: (distance <= radius) ? y : Math.sin(radian) * radius + radius
         };
 
-        analogus(targetPickerIndex, distance);
         drawVolume(targetPickerIndex);
-        drawPickers();
+        harmony(targetPickerIndex);
     }
-});
-
-document.getElementById('color-mode').addEventListener('change', () => {
-    colorMode = document.getElementById('color-mode').value;
-
-    if(colorMode === 'hsv'){
-        RH.max = 359;
-        GS.min = 1;
-        GS.max = BV.max = 100;
-    }
-    else if(colorMode == 'rgb'){
-        GS.min = 0;
-        RH.max = GS.max = BV.max = 255;
-    }
+    else{
+        const bounds = colorWheelPickers.getBoundingClientRect();
+        const x = event.clientX - bounds.left - radius;
+        const y = event.clientY - bounds.top - radius;
+        let maxDistance = pickerRadius;
     
-    setSliders();
+        for(let i = 0; i < pickers.length; i++){
+            const picker = pickers[i];
+            const distance = calculateDistance(x, picker.pos.x - radius, y, picker.pos.y - radius);
+            
+            if(distance < maxDistance){
+                maxDistance = distance;
+            }
+        }
+        if(maxDistance < pickerRadius) colorWheelPickers.style.setProperty('cursor', 'crosshair');
+        else colorWheelPickers.style.setProperty('cursor', 'default');
+    }
+
 });
 
 //Sliders inputs
 RH.addEventListener('input', () => {
     const value = RH.value;
-    if(colorMode === 'hsv'){
-        const hue = value;
-        const saturation = pickers[targetPickerIndex].color.hsv.s / 100;
+    const hue = value;
+    const saturation = pickers[targetPickerIndex].color.hsv.s / 100;
 
-        const radian = degToRad(hue);
-        const distance = radius * saturation;
+    const radian = degToRad(hue);
+    const distance = radius * saturation;
 
-        const x = Math.cos(radian) * distance + radius;
-        const y = Math.sin(radian) * distance + radius;
+    const x = Math.cos(radian) * distance + radius;
+    const y = Math.sin(radian) * distance + radius;
 
-        pickers[targetPickerIndex].pos = {
-            x: x,
-            y: y
-        }
-
-        analogus(targetPickerIndex);
-        drawPickers();
+    pickers[targetPickerIndex].pos = {
+        x: x,
+        y: y
     }
+
+    harmony(targetPickerIndex);
 });
+
 GS.addEventListener('input', () => {
     const value = GS.value;
-    if(colorMode === 'hsv'){
-        const hue = pickers[targetPickerIndex].color.hsv.h;
-        const saturation = value / 100;
 
-        const radian = degToRad(hue);
-        const distance = radius * saturation;
+    const hue = pickers[targetPickerIndex].color.hsv.h;
+    const saturation = value / 100;
 
-        const x = Math.cos(radian) * distance + radius;
-        const y = Math.sin(radian) * distance + radius;
+    const radian = degToRad(hue);
+    const distance = radius * saturation;
 
-        pickers[targetPickerIndex].pos = {
-            x: x,
-            y: y
-        }
+    const x = Math.cos(radian) * distance + radius;
+    const y = Math.sin(radian) * distance + radius;
 
-        analogus(targetPickerIndex);
-        drawPickers();
+    pickers[targetPickerIndex].pos = {
+        x: x,
+        y: y
     }
+
+    harmony(targetPickerIndex);
 });
+
 BV.addEventListener('input', () => {
     const value = BV.value;
-    if(colorMode === 'hsv'){
-        pickers[targetPickerIndex].color.hsv.v = value;
-        if(targetPickerIndex === targetPickerIndex) drawVolume(targetPickerIndex);
-        drawPickers();
-    }
+    pickers[targetPickerIndex].color.hsv.v = value;
+    drawVolume(targetPickerIndex);
+    drawPickers();
 });
 
-//Temporary functions
+document.getElementById('harmony-mode').addEventListener('change', () => {
+    harmonyMode = document.getElementById('harmony-mode').value;
+    harmony(-1);
+});
+
+//THis function return an rgb string of the given picker index
 function getRgb(index){
     const picker = pickers[index].color.rgb;
     return 'rgb(' + picker.r + ',' + picker.g + ',' + picker.b + ')';
 }
 
+//This function set the palette of the picked colors from Color Harmony
 function setPalette(){
+    //We loop througth each picker
     for(let i = 0; i < pickers.length; i++){
+        //We set an id to each item cause the palette item are sortable so using id conserve the order the user gave them
         document.getElementById(i).style.setProperty('background-color', getRgb(i));
     }
 }
 
+//We set the palette inputs
 function setPaletteInputs(){
-    for(let i = 0; i < pickers.length; i++) setPaletteItemInput(i);
-}
-
-function setPaletteItemInput(index){
-    const paletteItem = document.getElementsByClassName('current-palette-item')[index];
-    paletteItem.addEventListener('click', () => {
-        targetPickerIndex = pickersOrder[index];
-        document.getElementsByClassName('selected-item')[0].classList.toggle('selected-item');
-        paletteItem.classList.toggle('selected-item');
-        setSliders();
-    });
+    for(let i = 0; i < pickers.length; i++) {
+        const paletteItem = document.getElementsByClassName('current-palette-item')[i];
+        paletteItem.addEventListener('click', () => {
+            targetPickerIndex = pickersOrder[i];
+            document.getElementsByClassName('selected-item')[0].classList.toggle('selected-item');
+            paletteItem.classList.toggle('selected-item');
+            if(Number(paletteItem.id) === targetPickerIndex) drawVolume(targetPickerIndex);
+            setSliders();
+            drawPickerOntop();
+        });
+    }
 }
 
 function setSliders(){
@@ -502,16 +699,9 @@ function setSliders(){
     let gs = 0;
     let bv = 0;
 
-    if(colorMode === 'hsv'){
-        rh = pickers[targetPickerIndex].color.hsv.h;
-        gs = pickers[targetPickerIndex].color.hsv.s;
-        bv = pickers[targetPickerIndex].color.hsv.v;
-    }
-    else if(colorMode === 'rgb'){
-        rh = pickers[targetPickerIndex].color.rgb.r;
-        gs = pickers[targetPickerIndex].color.rgb.g;
-        bv = pickers[targetPickerIndex].color.rgb.b;
-    }
+    rh = pickers[targetPickerIndex].color.hsv.h;
+    gs = pickers[targetPickerIndex].color.hsv.s;
+    bv = pickers[targetPickerIndex].color.hsv.v;
 
     RH.value = rh;
     GS.value = gs

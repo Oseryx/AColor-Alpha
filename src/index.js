@@ -37,7 +37,6 @@ else{
   });
 }
 
-
 function systemTray() {
   let tray = null;
   app.whenReady().then(() => {
