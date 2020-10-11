@@ -90,7 +90,11 @@ let monochromaticDistances = [70, 70];
 //Triad variables
 const triadAngle = 120;
 let triadRotation = degToRad(-90);
-let triadDistances =  new Array(4).fill(0);
+let triadDistances =  [0, 0, 0, 0];
+
+//Complementary variables
+let complementaryRotation = degToRad(-90);
+let complementaryDistances = [0, 0, 0, 0];
 /*
     How the color wheel will be done:
 
@@ -103,10 +107,10 @@ let triadDistances =  new Array(4).fill(0);
     3: It will be the canvas that is reponsible of drawing the pickers of the color wheel, it will calculated all of their positions based on the moved one and the color harmony's type used
 
     Color harmony types:
-    - Analogus
-    - Monochromatic
-    - Triad
-    - Complementary
+    - Analogus [Done]
+    - Monochromatic [Done]
+    - Triad [Done]
+    - Complementary [Working on it]
     - Split Complementary
     - Double Split Complementary
     - Square
@@ -507,9 +511,7 @@ function triad(movedPickerIndex){
         let distance = 0;
 
         if(i > 0 && movedPickerIndex === 0){
-            //const pickerDistance =  calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0);
             distance = (leaderDistance - triadDistances[i - 1] > pickerRadius) ? leaderDistance - triadDistances[i - 1] : leaderDistance + triadDistances[i - 1];
-            //console.log((~~leaderDistance - ~~triadDistances[i - 1] >= pickerRadius) ? (~~leaderDistance - ~~triadDistances[i - 1]) : (~~leaderDistance + ~~triadDistances[i - 1]));
         }
         else if(i === 0){
             distance = leaderDistance;
@@ -520,6 +522,7 @@ function triad(movedPickerIndex){
         
         //const pickerDistance = calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0);
         distance = (movedPickerIndex === -1) ? ((i % 2 === 0) ? 125 : 90) : distance;
+        distance = (distance <= radius) ? distance : radius;
         
         const x = Math.cos(renderingTriadRotation) * distance + radius;
         const y = Math.sin(renderingTriadRotation) * distance + radius;
@@ -532,13 +535,57 @@ function triad(movedPickerIndex){
     //We set all the triad distances after generating the triad harmony
     if(movedPickerIndex === -1){
         for(let i = 1; i < 5; i++){
-            triadDistances[i] = leaderDistance - calculateDistance(pickers[i].pos.x - radius, 0, pickers[i].pos.y - radius, 0);
+            triadDistances[i - 1] = leaderDistance - calculateDistance(pickers[i].pos.x - radius, 0, pickers[i].pos.y - radius, 0);
         }
     }
 }
 
 function complementary(movedPickerIndex){
+    const leaderDistance = (movedPickerIndex > -1) ? calculateDistance(pickers[0].pos.x - radius, 0, pickers[0].pos.y - radius, 0) : 125;
 
+    if(movedPickerIndex !== -1){
+        complementaryRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
+        if(movedPickerIndex > 2) complementaryRotation -= degToRad(180);
+    }
+    if(movedPickerIndex > 0){
+        complementaryDistances[movedPickerIndex - 1] = leaderDistance - calculateDistance(pickers[movedPickerIndex].pos.x - radius, 0, pickers[movedPickerIndex].pos.y - radius, 0);
+    }
+
+    let renderingComplementaryRotation = complementaryRotation;
+    for(let i = 0; i < pickers.length; i++){
+        const picker = pickers[i];
+
+        let distance = 0;
+
+        if(movedPickerIndex === -1){
+            if(i === 0) distance = 115;
+            else distance = (i % 2 === 0) ? 125 : 100;
+        }
+        else if(i > 0 && movedPickerIndex === 0){
+            distance = (leaderDistance - complementaryDistances[i - 1] > 0) ? leaderDistance - complementaryDistances[i - 1] : 0;
+        }
+        else if(i === 0){
+            distance = leaderDistance;
+        }
+        else{
+            distance = calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0);
+        }
+
+        distance = (distance <= radius) ? distance : radius;
+
+        const x = Math.cos(renderingComplementaryRotation) * distance + radius;
+        const y = Math.sin(renderingComplementaryRotation) * distance + radius;
+
+        if(i === 2) renderingComplementaryRotation += degToRad(180);
+
+        picker.pos = { x: x, y: y }
+    }
+
+    if(movedPickerIndex === -1){
+        for(let i = 1; i < 5; i++){
+            complementaryDistances[i - 1] = leaderDistance - calculateDistance(pickers[i].pos.x - radius, 0, pickers[i].pos.y - radius, 0);
+        }
+    }
 }
 
 //DOM Events
