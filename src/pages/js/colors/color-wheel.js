@@ -95,6 +95,12 @@ let triadDistances =  [0, 0, 0, 0];
 //Complementary variables
 let complementaryRotation = degToRad(-90);
 let complementaryDistances = [0, 0, 0, 0];
+
+//Split complementary variables
+let splitComplementaryRotation = degToRad(-90);
+let splitComplementaryAngle = 145;
+let splitComplementaryDistances = [0, 0, 0, 0];
+let inverseSplitComplementaryPickers = false;
 /*
     How the color wheel will be done:
 
@@ -110,9 +116,9 @@ let complementaryDistances = [0, 0, 0, 0];
     - Analogus [Done]
     - Monochromatic [Done]
     - Triad [Done]
-    - Complementary [Working on it]
-    - Split Complementary
-    - Double Split Complementary
+    - Complementary [Done]
+    - Split Complementary [Done]
+    - Double Split Complementary [Working on it]
     - Square
     - Compound
     - Shades
@@ -296,6 +302,12 @@ function harmony(movedPickerIndex){
     }
     else if(harmonyMode === 'complementary'){
         complementary(movedPickerIndex);
+    }
+    else if(harmonyMode === 'split-complementary'){
+        splitComplementary(movedPickerIndex);
+    }
+    else if(harmonyMode === 'double-split-complementary'){
+        doubleSplitComplementary(movedPickerIndex);
     }
     drawPickers();
 }
@@ -586,6 +598,94 @@ function complementary(movedPickerIndex){
             complementaryDistances[i - 1] = leaderDistance - calculateDistance(pickers[i].pos.x - radius, 0, pickers[i].pos.y - radius, 0);
         }
     }
+}
+
+function splitComplementary(movedPickerIndex){
+    const leaderDistance = (movedPickerIndex > -1) ? calculateDistance(pickers[0].pos.x - radius, 0, pickers[0].pos.y - radius, 0) : 125;
+
+    if(movedPickerIndex === 0){
+        splitComplementaryRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
+    }
+    else if(movedPickerIndex > 0){
+        splitComplementaryDistances[movedPickerIndex - 1] = leaderDistance - calculateDistance(pickers[movedPickerIndex].pos.x - radius, 0, pickers[movedPickerIndex].pos.y - radius, 0);
+
+        const leaderRotation = Math.atan2(pickers[0].pos.y - radius, pickers[0].pos.x - radius);
+        const pickerRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
+
+
+        const rotationDirection = (movedPickerIndex < 3) ? 1 : -1;
+        const angle = (radToDeg(leaderRotation) < 180) ? (360 - radToDeg(leaderRotation)) - (360  - radToDeg(pickerRotation)) : radToDeg(leaderRotation) - radToDeg(pickerRotation);
+        
+        if(rotationDirection === 1){
+            if(radToDeg(leaderRotation) < 180){
+                if(angle > 180 || angle < 0) inverseSplitComplementaryPickers = true;
+                else inverseSplitComplementaryPickers = false;
+            }
+            else {
+                if(angle < 180 && angle > 0) inverseSplitComplementaryPickers = true;
+                else inverseSplitComplementaryPickers = false;
+            }
+        }
+        else{
+            if(radToDeg(leaderRotation) < 180){
+                if(angle < 180 && angle > 0) inverseSplitComplementaryPickers = true;
+                else inverseSplitComplementaryPickers = false;
+            }
+            else {
+                if(angle > 180 || angle < 0) inverseSplitComplementaryPickers = true;
+                else inverseSplitComplementaryPickers = false;
+            }
+        }
+
+        splitComplementaryAngle = Math.abs(radToDeg(leaderRotation) - radToDeg(pickerRotation));
+        if(splitComplementaryAngle > 180) splitComplementaryAngle = (360 - splitComplementaryAngle);
+    }
+
+    let rad = splitComplementaryRotation;
+    for(let i = 0; i < pickers.length; i++){
+        const picker = pickers[i];
+
+        let distance = leaderDistance;
+        if(movedPickerIndex === -1 && i > 0) distance = (i % 2 === 0) ? 115 : 90;
+        else if(movedPickerIndex === 0 && i > 0) {
+            distance = (leaderDistance - splitComplementaryDistances[i - 1] > 0) ? leaderDistance - splitComplementaryDistances[i - 1] : leaderDistance + splitComplementaryDistances[i - 1];
+        }
+        else if(movedPickerIndex > 0){
+            distance = calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0);
+        }
+
+        distance = (distance <= radius) ? distance : radius;
+
+        const x = Math.cos(rad) * distance + radius;
+        const y = Math.sin(rad) * distance + radius;
+
+        if(inverseSplitComplementaryPickers === false){
+            if(i === 0) rad += degToRad(splitComplementaryAngle);
+            else if(i === 2){
+                rad -= degToRad(splitComplementaryAngle);
+                rad -= degToRad(splitComplementaryAngle);
+            } 
+        }
+        else{
+            if(i === 0) rad -= degToRad(splitComplementaryAngle);
+            else if(i === 2){
+                rad += degToRad(splitComplementaryAngle);
+                rad += degToRad(splitComplementaryAngle);
+            } 
+        }
+
+        picker.pos = { x: x, y: y };
+    }
+
+    if(movedPickerIndex === -1){
+        for(let i = 1; i < 5; i++){
+            splitComplementaryDistances[i - 1] = leaderDistance - calculateDistance(pickers[i].pos.x - radius, 0, pickers[i].pos.y - radius, 0);
+        }
+    }
+}
+
+function doubleSplitComplementary(movedPickerIndex){
+
 }
 
 //DOM Events
