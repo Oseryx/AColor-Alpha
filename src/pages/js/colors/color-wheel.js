@@ -111,6 +111,13 @@ let inverseDoubleSplitComplementaryPickers = false;
 //Square complementary variables
 let squareRotation = degToRad(-90);
 let squareDistances = [0, 0, 0, 0];
+
+//Compound variables
+let compoundRotation = degToRad(-90);
+let compoundDistances = [0, 0, 0, 0];
+
+//Shades variables
+let shadesRotation = degToRad(-90);
 /*
     How the color wheel will be done:
 
@@ -321,6 +328,12 @@ function harmony(movedPickerIndex){
     }
     else if(harmonyMode === 'square'){
         square(movedPickerIndex);
+    }
+    else if(harmonyMode === 'compound'){
+        compound(movedPickerIndex);
+    }
+    else if(harmonyMode === 'shades'){
+        shades(movedPickerIndex);
     }
     drawPickers();
 }
@@ -825,6 +838,61 @@ function square(movedPickerIndex){
             squareDistances[i - 1] = leaderDistance - calculateDistance(pickers[i].pos.x - radius, 0, pickers[i].pos.y - radius, 0);
         }
     }
+}
+
+function compound(movedPickerIndex){
+    const leaderDistance = (movedPickerIndex > -1) ? calculateDistance(pickers[0].pos.x - radius, 0, pickers[0].pos.y - radius, 0) : 95;
+
+    if(movedPickerIndex === 0){
+        compoundRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
+    }
+    else if(movedPickerIndex > 0){
+        compoundDistances[movedPickerIndex - 1] = leaderDistance - calculateDistance(pickers[movedPickerIndex].pos.x - radius, 0, pickers[movedPickerIndex].pos.y - radius, 0);
+
+        const rotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
+
+        if(movedPickerIndex === 1 || movedPickerIndex === 2) compoundRotation = rotation + degToRad(30);
+        else if(movedPickerIndex === 3) compoundRotation = rotation + degToRad(145);
+        else compoundRotation = rotation + degToRad(165);
+    }
+
+    let rad = compoundRotation;
+    for(let i = 0; i < pickers.length; i++){
+        const picker = pickers[i];
+
+        let distance = leaderDistance;
+        if(movedPickerIndex === -1){
+            if(i === 1) distance = 105;
+            else if(i === 2) distance = 40;
+            else if(i === 3) distance = 115;
+            else if(i === 4) distance = 50;
+        }
+        else if(movedPickerIndex === 0 && i > 0){
+            distance = (leaderDistance - compoundDistances[i - 1] > 0) ? leaderDistance - compoundDistances[i - 1] : leaderDistance + compoundDistances[i - 1];
+        }
+        else if(movedPickerIndex > 0){
+            distance = calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0);
+        }
+
+        const x = Math.cos(rad) * distance + radius;
+        const y = Math.sin(rad) * distance + radius;
+
+        if(i === 0) rad -= degToRad(30);
+        else if(i === 2) rad -= degToRad(115);
+        else if(i === 3) rad -= degToRad(20);
+
+        picker.pos = { x: x, y: y };
+    }
+
+    if(movedPickerIndex === -1){
+        for(let i = 1; i < 5; i++){
+            compoundDistances[i - 1] = leaderDistance - calculateDistance(pickers[i].pos.x - radius, 0, pickers[i].pos.y - radius, 0);
+        }
+    }
+}
+
+function shades(movedPickerIndex){
+
 }
 
 //DOM Events
