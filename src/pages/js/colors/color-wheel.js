@@ -80,8 +80,8 @@ const pickerRadius = 15;
 
 let analogusAngle = 30;
 let analogusRotation = degToRad(-90);
-let analogusLeaderOriginalDistance = 125;
 let inverseAnalogusPickers = false;
+let analogusDistances = [0, 0, 0, 0];
 
 //Monochromatic variables
 let monochromaticRotation = degToRad(-90);
@@ -360,6 +360,7 @@ function analogus(movedPickerIndex){
 
     //We get the leader picker
     const leaderPicker = pickers[0];
+    const leaderDistance = (movedPickerIndex === -1) ? 125 : calculateDistance(pickers[0].pos.x - radius, 0, pickers[0].pos.y - radius, 0);
     //We define the rad that'll be used for pickers calculations
     let rad = analogusRotation;
     //We set the analogus distance factor
@@ -370,60 +371,19 @@ function analogus(movedPickerIndex){
 
     //This condition applies if we're moving the leader picker
     if(movedPickerIndex === 0){
-        //We calculate the distance between the leader picker and the center
-        const analogusNewDistance = calculateDistance(leaderPicker.pos.x - radius, 0, leaderPicker.pos.y - radius, 0);
-        //If the calculated distance is different from the previous distance that implies that the distance changed
-        if(analogusNewDistance !== analogusLeaderOriginalDistance){
-            //We calculate the factor between the new distance and the old one
-            analogusDistanceFactor = analogusNewDistance / analogusLeaderOriginalDistance;
-            //We set the oldDistance equal to the calculated one
-            analogusLeaderOriginalDistance = analogusNewDistance;
-        }
-
         //We calculate the analogusRotationof the analogus harmony
         analogusRotation = Math.atan2(leaderPicker.pos.y - radius, leaderPicker.pos.x - radius);
     }
     //This condtion applies of we're moving a non leader picker and we're not in the case of generation
     else if(movedPickerIndex !== -1) {
+        analogusDistances[movedPickerIndex - 1] = leaderDistance - calculateDistance(pickers[movedPickerIndex].pos.x - radius, 0, pickers[movedPickerIndex].pos.y - radius, 0);
+
         //We calculate the leader picker rotation
         const leaderRotation = Math.atan2(leaderPicker.pos.y - radius, leaderPicker.pos.x - radius);
         //We calculate the picker rotation
         const pickerRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
 
-        //We calculate in which direction is the rotation if it's the right pickers so it's 1 if not it's -1
-        const rotationDirection = (movedPickerIndex < 3) ? 1 : -1;
-        //We calculate the angle between the picker and the leader picker, if we are on the top of the circle we calculate the difference between 360 and the calculated angle
-        //If we not calculate the angle normaly
-        const angle = (radToDeg(leaderRotation) < 180) ? (360 - radToDeg(leaderRotation)) - (360  - radToDeg(pickerRotation)) : radToDeg(leaderRotation) - radToDeg(pickerRotation);
-        
-        //If we are moving the right pickers
-        if(rotationDirection === 1){
-            //If the leader is in the top of the circle
-            if(radToDeg(leaderRotation) < 180){
-                //If x ∈ ] - ∞; 0 [ ∪ ] 180; + ∞ [ that means we've passed the leader rotation by 180⁰ so we inverse the pickers
-                if(angle > 180 || angle < 0) inverseAnalogusPickers = true;
-                //If not we don't inverse
-                else inverseAnalogusPickers = false;
-            }
-            //If not
-            else {
-                //If x ∈ ] 0; 180 [ that means we've passed the leader rotation by 180⁰ so we inverse the pickers
-                if(angle < 180 && angle > 0) inverseAnalogusPickers = true;
-                else inverseAnalogusPickers = false;
-            }
-        }
-        //If we are moving the left pickers
-        else{
-            //Same thing as right pickers but we inverse conditions after checking in which part of the circle(top or bottom) we're
-            if(radToDeg(leaderRotation) < 180){
-                if(angle < 180 && angle > 0) inverseAnalogusPickers = true;
-                else inverseAnalogusPickers = false;
-            }
-            else {
-                if(angle > 180 || angle < 0) inverseAnalogusPickers = true;
-                else inverseAnalogusPickers = false;
-            }
-        }
+        inverseAnalogusPickers = inversePickers(movedPickerIndex);
 
         //We calculate the analogus angle by substracting the leader rotation from the picker rotation
         analogusAngle = Math.abs(radToDeg(leaderRotation) - radToDeg(pickerRotation));
@@ -438,13 +398,13 @@ function analogus(movedPickerIndex){
         //We target the picker
         const picker = pickers[i];
         //We calculate the distance between the picker and the center of the chromatic circle
-        const distance = (movedPickerIndex !== -1) ? 
-                //If it's not the case if generating a analogus harmony we calculate the distance between the picker and the center if the chromatic circle
-                //Then we multiply it by the analogusDistanceFactor, if we are moving a non leader picker the default value is one 
-                //Otherwise it's a another value that is calculated in the condition above
-                calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0) * analogusDistanceFactor
-                //If we are in the case if a generation we set the distance to 125 (This part'll be changed)
-                : 125;
+        let distance = leaderDistance;
+        if(movedPickerIndex === 0 && i > 0){
+            distance = (leaderDistance - analogusDistances[i - 1] > 0) ? leaderDistance - analogusDistances[i - 1] : 0;
+        }
+        else if(movedPickerIndex > 0){
+            distance = calculateDistance(picker.pos.x - radius, 0, picker.pos.y - radius, 0);
+        }
 
         //We calculate the x position, by using the cosine * distance (if the distance is greater than the radius 
         //so the distance'll be equal to the radius and with we'll have a collision system)
@@ -469,6 +429,12 @@ function analogus(movedPickerIndex){
 
         //We set the picker x and y positions
         picker.pos = { x: x, y: y };
+    }
+
+    if(movedPickerIndex === -1){
+        for(let i = 1; i < 5; i++){
+            analogusDistances[i - 1] = leaderDistance - calculateDistance(pickers[i].pos.x - radius, 0, pickers[i].pos.y - radius, 0);
+        }
     }
 }
 
@@ -661,30 +627,7 @@ function splitComplementary(movedPickerIndex){
         const leaderRotation = Math.atan2(pickers[0].pos.y - radius, pickers[0].pos.x - radius);
         const pickerRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
 
-
-        const rotationDirection = (movedPickerIndex < 3) ? 1 : -1;
-        const angle = (radToDeg(leaderRotation) < 180) ? (360 - radToDeg(leaderRotation)) - (360  - radToDeg(pickerRotation)) : radToDeg(leaderRotation) - radToDeg(pickerRotation);
-        
-        if(rotationDirection === 1){
-            if(radToDeg(leaderRotation) < 180){
-                if(angle > 180 || angle < 0) inverseSplitComplementaryPickers = true;
-                else inverseSplitComplementaryPickers = false;
-            }
-            else {
-                if(angle < 180 && angle > 0) inverseSplitComplementaryPickers = true;
-                else inverseSplitComplementaryPickers = false;
-            }
-        }
-        else{
-            if(radToDeg(leaderRotation) < 180){
-                if(angle < 180 && angle > 0) inverseSplitComplementaryPickers = true;
-                else inverseSplitComplementaryPickers = false;
-            }
-            else {
-                if(angle > 180 || angle < 0) inverseSplitComplementaryPickers = true;
-                else inverseSplitComplementaryPickers = false;
-            }
-        }
+        inverseSplitComplementaryPickers = inversePickers(movedPickerIndex);
 
         splitComplementaryAngle = Math.abs(radToDeg(leaderRotation) - radToDeg(pickerRotation));
         if(splitComplementaryAngle > 180) splitComplementaryAngle = (360 - splitComplementaryAngle);
@@ -749,30 +692,7 @@ function doubleSplitComplementary(movedPickerIndex){
         const leaderRotation = Math.atan2(pickers[0].pos.y - radius, pickers[0].pos.x - radius);
         const pickerRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
 
-
-        const rotationDirection = (movedPickerIndex < 3) ? 1 : -1;
-        const angle = (radToDeg(leaderRotation) < 180) ? (360 - radToDeg(leaderRotation)) - (360  - radToDeg(pickerRotation)) : radToDeg(leaderRotation) - radToDeg(pickerRotation);
-        
-        if(rotationDirection === 1){
-            if(radToDeg(leaderRotation) < 180){
-                if(angle > 180 || angle < 0) inverseDoubleSplitComplementaryPickers = true;
-                else inverseDoubleSplitComplementaryPickers = false;
-            }
-            else {
-                if(angle < 180 && angle > 0) inverseDoubleSplitComplementaryPickers = true;
-                else inverseDoubleSplitComplementaryPickers = false;
-            }
-        }
-        else{
-            if(radToDeg(leaderRotation) < 180){
-                if(angle < 180 && angle > 0) inverseDoubleSplitComplementaryPickers = true;
-                else inverseDoubleSplitComplementaryPickers = false;
-            }
-            else {
-                if(angle > 180 || angle < 0) inverseDoubleSplitComplementaryPickers = true;
-                else inverseDoubleSplitComplementaryPickers = false;
-            }
-        }
+        inverseDoubleSplitComplementaryPickers = inversePickers(movedPickerIndex);
 
         doubleSplitComplementaryAngle = Math.abs(radToDeg(leaderRotation) - radToDeg(pickerRotation));
         if(doubleSplitComplementaryAngle > 180) doubleSplitComplementaryAngle = (360 - doubleSplitComplementaryAngle);
@@ -949,6 +869,46 @@ function shades(movedPickerIndex){
     }
 }
 
+function inversePickers(movedPickerIndex){
+    const leaderRotation = Math.atan2(pickers[0].pos.y - radius, pickers[0].pos.x - radius);
+    const pickerRotation = Math.atan2(pickers[movedPickerIndex].pos.y - radius, pickers[movedPickerIndex].pos.x - radius);
+
+    //We calculate in which direction is the rotation if it's the right pickers so it's 1 if not it's -1
+    const rotationDirection = (movedPickerIndex < 3) ? 1 : -1;
+    //We calculate the angle between the picker and the leader picker, if we are on the top of the circle we calculate the difference between 360 and the calculated angle
+    const angle = (radToDeg(leaderRotation) < 180) ? (360 - radToDeg(leaderRotation)) - (360  - radToDeg(pickerRotation)) : radToDeg(leaderRotation) - radToDeg(pickerRotation);
+        
+    //If we are moving the right pickers
+    if(rotationDirection === 1){
+        //If the leader is in the top of the circle
+        if(radToDeg(leaderRotation) < 180){
+            //If x ∈ ] - ∞; 0 [ ∪ ] 180; + ∞ [ that means we've passed the leader rotation by 180⁰ so we inverse the pickers
+            if(angle > 180 || angle < 0) return true;
+            //If not we don't inverse
+            else return false;
+        }
+        //If not
+        else {
+            //If x ∈ ] 0; 180 [ that means we've passed the leader rotation by 180⁰ so we inverse the pickers
+            if(angle < 180 && angle > 0) return true;
+            //If not
+            else return false;
+        }
+    }
+    //If we are moving the left pickers
+    else{
+        //Same thing as right pickers but we inverse conditions after checking in which part of the circle(top or bottom) we're
+        if(radToDeg(leaderRotation) < 180){
+            if(angle < 180 && angle > 0) return true;
+            else return false;
+        }
+        else {
+            if(angle > 180 || angle < 0) return true;
+            else return false;
+        }
+    }
+}
+
 //DOM Events
 colorWheelPickers.addEventListener('mousedown', (event) => {
     const bounds = colorWheelPickers.getBoundingClientRect();
@@ -1103,15 +1063,9 @@ function setPaletteInputs(){
 }
 
 function setSliders(){
-    let rh = 0;
-    let gs = 0;
-    let bv = 0;
+    const { h, s, v} = pickers[targetPickerIndex].color.hsv;
 
-    rh = pickers[targetPickerIndex].color.hsv.h;
-    gs = pickers[targetPickerIndex].color.hsv.s;
-    bv = pickers[targetPickerIndex].color.hsv.v;
-
-    RH.value = rh;
-    GS.value = gs
-    BV.value = bv;
+    RH.value = h;
+    GS.value = s
+    BV.value = v;
 }
