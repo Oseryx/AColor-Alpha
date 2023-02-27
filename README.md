@@ -1,3 +1,5 @@
+The code is just terrible it was my first projet with 0 experience in js
+
 # Color-Picker
 This app is based on the awesome work of [Toinane](https://github.com/Toinane)'s Color-picker, the main goal of it, is to give all possible options for color selection and management, it supports:
 - Hex
